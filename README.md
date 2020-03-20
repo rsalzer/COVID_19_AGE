@@ -12,5 +12,4 @@ See visualisation here: https://rsalzer.github.io/COVID_19_AGE
   * <a href="male.csv">allages.csv</a>
 
 ## Exampleimage
-![09-20]("https://raw.githubusercontent.com/")
 <img src="https://github.com/rsalzer/COVID_19_AGE/blob/master/bagdiagrams/03-20.jpg" alt="OpenZH-logo" width="360"/>
