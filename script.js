@@ -23,11 +23,11 @@ var ageColours = {
   "80+": 'rgb(183, 191, 130)'
 };
 
-/* d3.json('', function(error, data) {
+d3.json('https://api.github.com/repos/rsalzer/COVID_19_AGE/commits?path=allages.csv&page=1&per_page=1', function(error, data) {
   var lastUpdateDiv = document.getElementById('latestUpdate');
-  lastUpdateDiv.innerHTML = "<i>Letztes Update der offiziellen Daten: "+data[0].commit.committer.date.substring(0,10)+" ("+data[0].commit.message+")</i>";
+  lastUpdateDiv.innerHTML = "<i>Letztes Update der Daten: "+data[0].commit.committer.date.substring(0,10)+" ("+data[0].commit.message+")</i>";
 });
-*/
+
 
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
