@@ -12,4 +12,4 @@ See visualisation here: https://rsalzer.github.io/COVID_19_AGE
   * <a href="male.csv">allages.csv</a>
 
 ## Exampleimage
-![09-13.jpg]("bagdiagrams/03-20.jpg")
+![09-13.jpg]("https://raw.githubusercontent.com/rsalzer/COVID_19_AGE/master/bagdiagrams/03-20.jpg")
