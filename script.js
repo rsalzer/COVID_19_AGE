@@ -3,12 +3,13 @@ var data;
 var ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
 var genderLabels = {
   "m": "Männer",
-  "f": "Frauen"
+  "f": "Frauen",
+  "both": "Alle"
 };
 
 var genderColours = {
   "f": 'rgba(255, 80, 80, 1.0)',
-  "m": 'rgba(80, 80, 255, 1.0)'
+  "m": 'rgba(80, 80, 255, 1.0)',
 }
 var ageColours = {
   "0-9": 'rgb(44, 106, 105)',
@@ -30,6 +31,7 @@ var ageColours = {
 
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
+  chartSingleAgeSex('both');
   chartSingleAgeSex('m');
   chartSingleAgeSex('f');
   for(var i=0; i<ageLabels.length; i++) {
@@ -48,7 +50,12 @@ function chartSingleAgeSex(sex) {
   var dateLabels = data.map(function(d) {return d.date});
   var allAgeData = [];
   for(var i=0; i<ageLabels.length; i++) {
-    var ageGroup = data.map(function(d) {return Math.round(10*parseFloat(d[sex+ageLabels[i]]))/10});
+    if(sex=='both') {
+      var ageGroup = data.map(function(d) {return Math.round(10*(parseFloat(d['m'+ageLabels[i]])+parseFloat(d['f'+ageLabels[i]])))/10});
+    }
+    else {
+      var ageGroup = data.map(function(d) {return Math.round(10*parseFloat(d[sex+ageLabels[i]]))/10});
+    }
     allAgeData.push(ageGroup);
   }
   var chart = new Chart(canvas.id, {
