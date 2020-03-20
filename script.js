@@ -36,8 +36,8 @@ d3.csv('allages.csv', function(error, csvdata) {
   h3.innerHTML = "Aktuelle Situation am "+data[data.length-1].date
   div.append(h3);
   pieChartSingleAgeSexLatest('both');
-  pieChartSingleAgeSexLatest('m');
   pieChartSingleAgeSexLatest('f');
+  pieChartSingleAgeSexLatest('m');
   h3 = document.createElement("h3");
   h3.innerHTML = "Verlauf"
   div.append(h3);
