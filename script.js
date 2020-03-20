@@ -31,12 +31,19 @@ var ageColours = {
 
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
-  chartSingleAgeSex('both');
+  var div = document.getElementById("maindiv");
+  var h3 = document.createElement("h3");
+  h3.innerHTML = "Aktuelle Situation am "+data[data.length-1].date
+  div.append(h3);
   pieChartSingleAgeSexLatest('both');
-  chartSingleAgeSex('m');
   pieChartSingleAgeSexLatest('m');
-  chartSingleAgeSex('f');
   pieChartSingleAgeSexLatest('f');
+  h3 = document.createElement("h3");
+  h3.innerHTML = "Verlauf"
+  div.append(h3);
+  chartSingleAgeSex('both');
+  chartSingleAgeSex('f');
+  chartSingleAgeSex('m');
   for(var i=0; i<ageLabels.length; i++) {
     chartAgesBothSexes(ageLabels[i]);
   }
