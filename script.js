@@ -32,12 +32,63 @@ var ageColours = {
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
   chartSingleAgeSex('both');
+  pieChartSingleAgeSexLatest('both');
   chartSingleAgeSex('m');
+  pieChartSingleAgeSexLatest('m');
   chartSingleAgeSex('f');
+  pieChartSingleAgeSexLatest('f');
   for(var i=0; i<ageLabels.length; i++) {
     chartAgesBothSexes(ageLabels[i]);
   }
 });
+
+function pieChartSingleAgeSexLatest(sex) {
+  var div = document.getElementById("maindiv");
+  var canvas = document.createElement("canvas");
+  //canvas.className  = "myClass";
+  canvas.id = 'piechart'+sex;
+  canvas.height=300;
+  canvas.width=500+data.length*30;
+  div.appendChild(canvas);
+  var ageArray = [];
+  var latestData = data[data.length-1];
+  for(var i=0; i<ageLabels.length; i++) {
+    if(sex=='both')
+      var singleData = Math.round(10*(parseFloat(latestData['m'+ageLabels[i]])+parseFloat(latestData['f'+ageLabels[i]])))/10;
+    else {
+      var singleData = Math.round(10*(parseFloat(latestData[sex+ageLabels[i]])))/10;
+    }
+    ageArray.push(singleData);
+  }
+  var colours = Object.keys(ageColours).map(function(key){
+    return ageColours[key];
+  });
+  var lastDate = data[data.length-1].date;
+  var pieChartLabel = "Fälle nach Alter per 100'000 Bewohner am "+lastDate+" "+genderLabels[sex];
+  var config = {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: ageArray,
+        backgroundColor: colours,
+        label: pieChartLabel
+      }],
+      labels: ageLabels
+    },
+    options: {
+      responsive: false,
+      legend: {
+        display: true,
+        position: 'left'
+      },
+      title: {
+        display: true,
+        text: pieChartLabel
+      }
+    }
+    };
+    var chart = new Chart(canvas.id,config);
+}
 
 function chartSingleAgeSex(sex) {
   var div = document.getElementById("maindiv");
@@ -82,8 +133,9 @@ function chartSingleAgeSex(sex) {
         },
       }]
   },
-      plugins: {
-        }
+  plugins: {
+    labels: false
+  }
     },
     data: {
       labels: dateLabels,
