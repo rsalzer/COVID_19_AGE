@@ -7,8 +7,8 @@ var genderLabels = {
 };
 
 var genderColours = {
-  "m": 'rgba(255, 80, 80, 1.0)',
-  "f": 'rgba(80, 80, 255, 1.0)'
+  "f": 'rgba(255, 80, 80, 1.0)',
+  "m": 'rgba(80, 80, 255, 1.0)'
 }
 var ageColours = {
   "0-9": 'rgb(44, 106, 105)',
