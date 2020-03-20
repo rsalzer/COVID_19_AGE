@@ -30,14 +30,14 @@ var ageColours = {
 
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
-  chartSingleAgeSex(data,'m');
-  chartSingleAgeSex(data,'f');
+  chartSingleAgeSex('m');
+  chartSingleAgeSex('f');
   for(var i=0; i<ageLabels.length; i++) {
-    chartAgesBothSexes(data, ageLabels[i]);
+    chartAgesBothSexes(ageLabels[i]);
   }
 });
 
-function chartSingleAgeSex(data, sex) {
+function chartSingleAgeSex(sex) {
   var div = document.getElementById("maindiv");
   var canvas = document.createElement("canvas");
   //canvas.className  = "myClass";
@@ -140,7 +140,7 @@ function chartSingleAgeSex(data, sex) {
   });
 }
 
-function chartAgesBothSexes(data, age) {
+function chartAgesBothSexes(age) {
   var div = document.getElementById("maindiv");
   var canvas = document.createElement("canvas");
   //canvas.className  = "myClass";
