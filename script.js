@@ -32,16 +32,18 @@ d3.json('https://api.github.com/repos/rsalzer/COVID_19_AGE/commits?path=allages.
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
   var div = document.getElementById("maindiv");
+  /*
   var h3 = document.createElement("h3");
   h3.innerHTML = "Aktuelle Situation am "+data[data.length-1].date
   div.append(h3);
-  pieChartSingleAgeSexLatest('both');
-  pieChartSingleAgeSexLatest('f');
-  pieChartSingleAgeSexLatest('m');
+  //pieChartSingleAgeSexLatest('both');
+  //pieChartSingleAgeSexLatest('f');
+  //pieChartSingleAgeSexLatest('m');
   h3 = document.createElement("h3");
   h3.innerHTML = "Verlauf"
   div.append(h3);
-  chartSingleAgeSex('both');
+  */
+  //chartSingleAgeSex('both');
   chartSingleAgeSex('f');
   chartSingleAgeSex('m');
   for(var i=0; i<ageLabels.length; i++) {
