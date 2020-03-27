@@ -68,9 +68,10 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
   }
   var bag = parseInt(latest.totalbag);
   var missing = bag-sum;
+  var missingPerc = Math.round(missing/bag*100);
   totalArray.push(missing);
   var tr = document.createElement("tr");
-  tr.innerHTML = "<th>Fehlend</th><td></td><td></td><td>"+missing+"</td>";
+  tr.innerHTML = "<th>Fehlend</th><td></td><td></td><td>"+missing+" ("+missingPerc+" %)</td>";
   table.appendChild(tr);
   tr = document.createElement("tr");
   tr.innerHTML = "<th>TOTAL</th><td>"+sumf+"</td><td>"+summ+"</td><td>"+bag+"</td>";
