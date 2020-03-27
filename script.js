@@ -1,4 +1,5 @@
 var data;
+var detaildata;
 
 var ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
 var genderLabels = {
@@ -20,7 +21,8 @@ var ageColours = {
   "50-59": 'rgb(161, 215, 108)',
   "60-69": 'rgb(179, 209, 109)',
   "70-79": 'rgb(184, 193, 127)',
-  "80+": 'rgb(183, 191, 130)'
+  "80+": 'rgb(183, 191, 130)',
+  "missing": 'rgb(100,100,100)'
 };
 
 d3.json('https://api.github.com/repos/rsalzer/COVID_19_AGE/commits?path=allages.csv&page=1&per_page=1', function(error, data) {
@@ -32,23 +34,90 @@ d3.json('https://api.github.com/repos/rsalzer/COVID_19_AGE/commits?path=allages.
 d3.csv('allages.csv', function(error, csvdata) {
   data = csvdata;
   var div = document.getElementById("maindiv");
-  /*
-  var h3 = document.createElement("h3");
-  h3.innerHTML = "Aktuelle Situation am "+data[data.length-1].date
-  div.append(h3);
-  //pieChartSingleAgeSexLatest('both');
-  //pieChartSingleAgeSexLatest('f');
-  //pieChartSingleAgeSexLatest('m');
-  h3 = document.createElement("h3");
-  h3.innerHTML = "Verlauf"
-  div.append(h3);
-  */
-  //chartSingleAgeSex('both');
   chartSingleAgeSex('f');
   chartSingleAgeSex('m');
   for(var i=0; i<ageLabels.length; i++) {
     chartAgesBothSexes(ageLabels[i]);
   }
+});
+
+d3.csv('allagesdetails.csv', function(error, csvdata) {
+  detaildata = csvdata;
+  var latest = detaildata[detaildata.length-1];
+  var div = document.getElementById("latest");
+  div.innerHTML = "<h3>Aktuelle absolute Zahlen "+latest.date+"</h3>"
+  var table = document.createElement("table");
+  table.id = "firstTable";
+  table.innerHTML = "<tr><th>Altersgruppe</th><th>Frauen</th><th>Männer</th><th>Gesamt</th></tr>";
+  var sum = 0;
+  var sumf = 0;
+  var summ = 0;
+  var totalArray = [];
+  for(var i=0; i<ageLabels.length; i++) {
+    var tr = document.createElement("tr");
+    var label = ageLabels[i];
+    var f = parseInt(latest["f"+label]);
+    var m = parseInt(latest["m"+label]);
+    var tot = f+m;
+    totalArray.push(tot);
+    tr.innerHTML = "<th>"+label+"</th><td>"+f+"</td><td>"+m+"</td><td>"+tot+"</td>";
+    table.appendChild(tr);
+    sum += tot;
+    summ += m;
+    sumf += f;
+  }
+  var bag = parseInt(latest.totalbag);
+  var missing = bag-sum;
+  totalArray.push(missing);
+  var tr = document.createElement("tr");
+  tr.innerHTML = "<th>Fehlend</th><td></td><td></td><td>"+missing+"</td>";
+  table.appendChild(tr);
+  tr = document.createElement("tr");
+  tr.innerHTML = "<th>TOTAL</th><td>"+sumf+"</td><td>"+summ+"</td><td>"+bag+"</td>";
+  table.appendChild(tr);
+  div.appendChild(table);
+
+  var canvas = document.createElement("canvas");
+  //canvas.className  = "myClass";
+  canvas.id = 'piechart';
+  canvas.height=300;
+  canvas.width=500;
+  div.appendChild(canvas);
+  var labels = ageLabels.slice();
+  labels.push("fehlend");
+  var colours = Object.keys(ageColours).map(function(key){
+    return ageColours[key];
+  });
+  var lastDate = data[data.length-1].date;
+  var pieChartLabel = "Fälle nach Alter "+latest.date;
+  var config = {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: totalArray,
+        backgroundColor: colours,
+        label: pieChartLabel
+      }],
+      labels: labels
+    },
+    options: {
+      responsive: false,
+      legend: {
+        display: true,
+        position: 'right'
+      },
+      title: {
+        display: true,
+        text: pieChartLabel
+      },
+      plugins: {
+        labels: true
+      }
+    }
+    };
+    var chart = new Chart(canvas.id,config);
+
+
 });
 
 function pieChartSingleAgeSexLatest(sex) {
@@ -125,6 +194,9 @@ function chartSingleAgeSex(sex) {
       legend: {
         display: true,
         position: 'left'
+      },
+      plugins: {
+        labels: false
       },
       title: {
         display: true,
@@ -243,8 +315,9 @@ function chartAgesBothSexes(age) {
         },
       }]
   },
-      plugins: {
-        }
+  plugins: {
+    labels: false
+  }
     },
     data: {
       labels: dateLabels,
