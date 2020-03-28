@@ -1,5 +1,6 @@
 var data;
 var detaildata;
+var deaths;
 
 var ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
 var genderLabels = {
@@ -118,8 +119,96 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
     };
     var chart = new Chart(canvas.id,config);
 
-
+    loadDeaths();
 });
+
+
+function loadDeaths() {
+  d3.csv('deaths.csv', function(error, csvdata) {
+    deaths = csvdata;
+    var latestDeaths = deaths[deaths.length-1];
+    var latest = detaildata[detaildata.length-1];
+    var div = document.getElementById("latest");
+    var h3 = document.createElement("h3");
+    h3.innerHTML = "Todesfälle bis zum "+latestDeaths.date+"</h3>";
+    div.appendChild(h3);
+    var table = document.createElement("table");
+    table.id = "deathTable";
+    table.innerHTML = "<tr><th>Altersgruppe</th><th>Frauen</th><th>Sterblichkeit</th><th>Männer</th><th>Sterblichkeit</th><th>Gesamt</th><th>Sterblichkeit</th></tr>";
+    var sum = 0;
+    var sumf = 0;
+    var summ = 0;
+    var totalArray = [];
+    for(var i=0; i<ageLabels.length; i++) {
+      var tr = document.createElement("tr");
+      var label = ageLabels[i];
+      var f = parseInt(latestDeaths["f"+label]);
+      var fcases = parseInt(latest["f"+label]);
+      var m = parseInt(latestDeaths["m"+label]);
+      var mcases = parseInt(latest["m"+label]);
+      var tot = f+m;
+      var totcases = mcases + fcases;
+      var fmortality = Math.round(f/fcases*100*100)/100;
+      var mmortality = Math.round(m/mcases*100*100)/100;
+      var totmortality = Math.round(tot/totcases*100*100)/100;
+      totalArray.push(tot);
+      tr.innerHTML = "<th>"+label+"</th><td>"+f+"</td><td>"+fmortality+"%</td><td>"+m+"</td><td>"+mmortality+"%</td><td>"+tot+"</td><td>"+totmortality+"%</td>";
+      table.appendChild(tr);
+      sum += tot;
+      summ += m;
+      sumf += f;
+    }
+
+    var tr = document.createElement("tr");
+    table.appendChild(tr);
+    tr = document.createElement("tr");
+    tr.innerHTML = "<th>TOTAL</th><td>"+sumf+"</td><td></td><td>"+summ+"</td><td></td><td>"+sum+"</td><td></td>";
+    table.appendChild(tr);
+    div.appendChild(table);
+
+    var canvas = document.createElement("canvas");
+    //canvas.className  = "myClass";
+    canvas.id = 'piechartdeath';
+    canvas.height=300;
+    canvas.width=500;
+    div.appendChild(canvas);
+    var labels = ageLabels.slice();
+    var colours = Object.keys(ageColours).map(function(key){
+      return ageColours[key];
+    });
+    var lastDate = data[data.length-1].date;
+    var pieChartLabel = "Todesfälle nach Alter "+latestDeaths.date;
+    var config = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: totalArray,
+          backgroundColor: colours,
+          label: pieChartLabel
+        }],
+        labels: labels
+      },
+      options: {
+        responsive: false,
+        legend: {
+          display: true,
+          position: 'right'
+        },
+        title: {
+          display: true,
+          text: pieChartLabel
+        },
+        plugins: {
+          labels: true
+        }
+      }
+      };
+      var chart = new Chart(canvas.id,config);
+
+  });
+}
+
+
 
 function pieChartSingleAgeSexLatest(sex) {
   var div = document.getElementById("maindiv");
