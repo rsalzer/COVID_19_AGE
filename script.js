@@ -46,7 +46,7 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
   detaildata = csvdata;
   var latest = detaildata[detaildata.length-1];
   var div = document.getElementById("latest");
-  div.innerHTML = "<h3>Aktuelle absolute Zahlen "+latest.date+"</h3>"
+  div.innerHTML = "<h3>Aktuelle absolute Zahlen der positiv Getesteten "+latest.date+"</h3>"
   var table = document.createElement("table");
   table.id = "firstTable";
   table.innerHTML = "<tr><th>Altersgruppe</th><th>Frauen</th><th>Männer</th><th>Gesamt</th></tr>";
