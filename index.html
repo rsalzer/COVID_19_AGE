@@ -26,20 +26,44 @@
     </script>
   </head>
   <body>
-    <h2>Corona-Fälle in der Schweiz nach Alter</h2>
-    <p>
-      Code auf <a href="https://github.com/rsalzer/COVID_19_AGE">GitHub</a><br/>
-      Die Daten sind bis zum 24.3. abgeleitet aus den vom BAG veröffentlichten Grafiken. Beispiel vom 20.3.2020:<br/>
-      <a href="bagdiagrams/03-20.jpg"><img src="bagdiagrams/03-20.jpg" width=200/></a><br/>
-      Ab dem 25.3. werden die Daten direkt aus der vom BAG veröffentlichten Excel-Datei entnommen.<br/>
-      <b>Achtung: Diese Visualisierungen sind mit Vorsicht zu betrachten.</b><br/>
-      Es gibt eine hohe Dunkelziffer, da noch immer nicht breit getestet werden kann.<br/>
-      Auch können die Daten des BAG nicht tagesaktuell sein.
-    </p>
+    <nav id="page-nav">
+  		<ul>
+  			<li><a title="Schweiz" href="https://rsalzer.github.io/COVID_19_CH">Schweiz</a></li>
+  			<!-- li><a title="Detailliertere Visualisierung für den Kanton Zürich" href="https://rsalzer.github.io/COVID_19_KT_ZH/">Zürich</a></li -->
+  			<li class="here"><a href="#">Alter</a></li>
+  		</ul>
+	  </nav>
+    <main>
+		<header id="page-header">
+			<h1>Corona-Fälle in der Schweiz nach Alter</h1>
+			<p>Die Daten sind bis zum 24.3. abgeleitet aus den vom BAG veröffentlichten Grafiken, danach aus den veröffentlichten Excel-Dateien, aufbereitet durch <a href="https://twitter.com/rob_salzer">@rob_salzer</a>.</p>
+			<div class="notes">
+				<p>
+          <b>Achtung: Diese Visualisierungen sind mit Vorsicht zu betrachten.</b><br/>
+          Es gibt eine hohe Dunkelziffer, da noch immer nicht breit getestet werden kann.<br/>
+          Auch können die Daten des BAG nicht tagesaktuell sein.
+        </p>
+			</div>
+		</header>
     <div id="latestUpdate"></div>
-    <div id="latest"></div>
-    <div id="maindiv"></div>
-
+    <section id="index">
+			<header>
+				<h2>Übersicht</h2>
+			</header>
+      <article id="latest">
+      </article>
+      <article id="deaths">
+      </article>
+    </section>
+    <section id="detail">
+      <header>
+  			<h2>Details</h2>
+	  </header>
+    </section>
+  </main>
+    <footer id="page-footer">
+      <p>Code auf <a href="https://github.com/rsalzer/COVID_19_AGE">GitHub</a>. Feedback, Anregungen, Verbesserungsvorschläge, Erweiterungen bitte auf GitHub oder direkt an <a href="https://twitter.com/rob_salzer">@rob_salzer</a>. Design by <a href="https://twitter.com/superpixel">@superpixel</a></p>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>
