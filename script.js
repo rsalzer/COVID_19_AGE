@@ -57,7 +57,7 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
   div.innerHTML = "<h3>Positiv getestet bis zum "+latest.date+"</h3>"
   var table = document.createElement("table");
   table.id = "firstTable";
-  table.innerHTML = "<tr><th>Altersgruppe</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
+  table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
   var totalArray = [];
   for(var i=0; i<ageLabels.length; i++) {
     var tr = document.createElement("tr");
@@ -152,8 +152,8 @@ function loadDeaths() {
     table.id = "deathTable";
     var mortalitytable = document.createElement("table");
     mortalitytable.id = "mortalityTable";
-    table.innerHTML = "<tr><th>Altersgruppe</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
-    mortalitytable.innerHTML = "<tr><th>Altersgruppe</th><th>Frauen</th><th>Männer</th><th>Gesamt</th></tr>";
+    table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
+    mortalitytable.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>Männer</th><th>Gesamt</th></tr>";
     var sum = 0;
     var sumf = 0;
     var summ = 0;
