@@ -144,7 +144,7 @@ function loadDeaths() {
     });
     var ftotal = latestDeathsArray.slice(1,10).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
     var mtotal = latestDeathsArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
-    var div = document.getElementById("latest");
+    var div = document.getElementById("deaths");
     var h3 = document.createElement("h3");
     h3.innerHTML = "Todesfälle bis zum "+latestDeaths.date;
     div.appendChild(h3);
@@ -200,9 +200,10 @@ function loadDeaths() {
     tr.innerHTML = "<th>TOTAL</th><td>"+fmortality+"%</td><td>"+mmortality+"%</td><td>"+totmortality+"%</td>";
     mortalitytable.appendChild(tr);
     div.appendChild(table);
+    div = document.getElementById("mortality");
     h3 = document.createElement("h3");
     h3.innerHTML = "Mortalität bis zum "+latestDeaths.date+"</h3>";
-    div.appendChild(h3);
+    div.prepend(h3);
     div.appendChild(mortalitytable);
 
     /*
