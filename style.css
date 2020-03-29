@@ -177,6 +177,14 @@ table tr td:nth-child(7) {
 	text-align: right;
   opacity: 0.5;
 }
+#mortality table tr td,
+#mortality table tr th {
+	opacity: 1.0;
+}
+#hosprate table tr td,
+#hosprate table tr th {
+	opacity: 1.0;
+}
 .table-group {
 /* 	background-color: lightblue; */
 	max-width: 640px;
