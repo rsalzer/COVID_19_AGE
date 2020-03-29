@@ -1,6 +1,7 @@
 var data;
 var detaildata;
 var deaths;
+var hostpitalised;
 
 var ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
 var genderLabels = {
@@ -130,6 +131,7 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
     var chart = new Chart(canvas.id,config);
     */
     loadDeaths();
+    loadHospitalised();
 });
 
 
@@ -205,6 +207,122 @@ function loadDeaths() {
     h3.innerHTML = "Mortalität bis zum "+latestDeaths.date+"</h3>";
     div.prepend(h3);
     div.appendChild(mortalitytable);
+
+    /*
+    var canvas = document.createElement("canvas");
+    //canvas.className  = "myClass";
+    canvas.id = 'piechartdeath';
+    canvas.height=300;
+    canvas.width=500;
+    div.appendChild(canvas);
+    var labels = ageLabels.slice();
+    var colours = Object.keys(ageColours).map(function(key){
+      return ageColours[key];
+    });
+    var lastDate = data[data.length-1].date;
+    var pieChartLabel = "Todesfälle nach Alter "+latestDeaths.date;
+    var config = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: totalArray,
+          backgroundColor: colours,
+          label: pieChartLabel
+        }],
+        labels: labels
+      },
+      options: {
+        responsive: false,
+        legend: {
+          display: true,
+          position: 'right'
+        },
+        title: {
+          display: true,
+          text: pieChartLabel
+        },
+        plugins: {
+          labels: true
+        }
+      }
+      };
+      var chart = new Chart(canvas.id,config);
+      */
+  });
+}
+
+function loadHospitalised() {
+  d3.csv('hospitalised.csv', function(error, csvdata) {
+    hospitalised = csvdata;
+    var latestHospitalised = hospitalised[hospitalised.length-1];
+    var latest = detaildata[detaildata.length-1];
+    var keys = Object.keys(latestHospitalised);
+    var latestHospitalisedArray = keys.map(function(key){
+      return latestHospitalised[key];
+    });
+    var ftotal = latestHospitalisedArray.slice(1,10).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+    var mtotal = latestHospitalisedArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+    var div = document.getElementById("hospitalised");
+    var h3 = document.createElement("h3");
+    h3.innerHTML = "Hospitalisierte Fälle bis zum "+latestHospitalised.date;
+    div.appendChild(h3);
+    var table = document.createElement("table");
+    table.id = "hospitalisedTable";
+    var hospratetable = document.createElement("table");
+    hospratetable.id = "hosprateTable";
+    table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
+    hospratetable.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>Männer</th><th>Gesamt</th></tr>";
+    var sum = 0;
+    var sumf = 0;
+    var summ = 0;
+    var sumcasesm = 0;
+    var sumcasesf = 0;
+    var totalArray = [];
+    for(var i=0; i<ageLabels.length; i++) {
+      var tr = document.createElement("tr");
+      var label = ageLabels[i];
+      var f = parseInt(latestHospitalised["f"+label]);
+      var fcases = parseInt(latest["f"+label]);
+      var m = parseInt(latestHospitalised["m"+label]);
+      var mcases = parseInt(latest["m"+label]);
+      var tot = f+m;
+      var percf = Math.round(f/ftotal*1000)/10;
+      var percm = Math.round(m/mtotal*1000)/10;
+      var perctot = Math.round(tot/(ftotal+mtotal)*1000)/10;
+      var totcases = mcases + fcases;
+      var fmortality = Math.round(f/fcases*100*100)/100;
+      var mmortality = Math.round(m/mcases*100*100)/100;
+      var totmortality = Math.round(tot/totcases*100*100)/100;
+      totalArray.push(tot);
+      tr.innerHTML = "<th>"+label+"</th><td>"+f+"</td><td>"+percf+"%</td><td>"+m+"</td><td>"+percm+"%</td><td>"+tot+"</td><td>"+perctot+"%</td>";
+      table.appendChild(tr);
+      sum += tot;
+      summ += m;
+      sumf += f;
+      sumcasesm += mcases;
+      sumcasesf += fcases;
+      tr = document.createElement("tr");
+      tr.innerHTML = "<th>"+label+"</th><td>"+fmortality+"%</td><td>"+mmortality+"%</td><td>"+totmortality+"%</td>";
+      hospratetable.appendChild(tr);
+    }
+
+    var tr = document.createElement("tr");
+    var fmortality = Math.round(sumf/sumcasesf*100*100)/100;
+    var mmortality = Math.round(summ/sumcasesm*100*100)/100;
+    var totmortality = Math.round(sum/parseInt(latest.totalbag)*100*100)/100;
+    var percf = Math.round(ftotal/(ftotal+mtotal)*1000)/10;
+    var percm = Math.round(mtotal/(ftotal+mtotal)*1000)/10;
+    tr.innerHTML = "<th>TOTAL</th><td>"+sumf+"</td><td>"+percf+"%</td><td>"+summ+"</td><td>"+percm+"%</td><td>"+sum+"</td><td></td>";
+    table.appendChild(tr);
+    tr = document.createElement("tr");
+    tr.innerHTML = "<th>TOTAL</th><td>"+fmortality+"%</td><td>"+mmortality+"%</td><td>"+totmortality+"%</td>";
+    hospratetable.appendChild(tr);
+    div.appendChild(table);
+    div = document.getElementById("hosprate");
+    h3 = document.createElement("h3");
+    h3.innerHTML = "Hospitalisationsrate bis zum "+latestHospitalised.date+"</h3>";
+    div.prepend(h3);
+    div.appendChild(hospratetable);
 
     /*
     var canvas = document.createElement("canvas");

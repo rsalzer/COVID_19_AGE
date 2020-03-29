@@ -120,6 +120,9 @@ section header h2 {
 #mortality h3 {
   margin-bottom: 0;
 }
+#hosprate h3 {
+  margin-bottom: 0;
+}
 section article {
 	margin-bottom: 2rem;
 }
