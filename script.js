@@ -55,7 +55,12 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
   var ftotal = latestArray.slice(1,10).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
   var mtotal = latestArray.slice(11,20).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
   var div = document.getElementById("latest");
-  div.innerHTML = "<h3>Positiv getestet bis zum "+latest.date+"</h3>"
+  var dateParts = latest.date.split("-");
+  var year = dateParts[0];
+  var month = parseInt(dateParts[1]);
+  var day = parseInt(dateParts[2]);
+  var dateString = day+"."+month+"."+year;
+  div.innerHTML = "<h3>Positiv getestet bis zum "+dateString+"</h3>"
   var table = document.createElement("table");
   table.id = "firstTable";
   table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
@@ -148,7 +153,12 @@ function loadDeaths() {
     var mtotal = latestDeathsArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
     var div = document.getElementById("deaths");
     var h3 = document.createElement("h3");
-    h3.innerHTML = "Todesfälle bis zum "+latestDeaths.date;
+    var dateParts = latestDeaths.date.split("-");
+    var year = dateParts[0];
+    var month = parseInt(dateParts[1]);
+    var day = parseInt(dateParts[2]);
+    var dateString = day+"."+month+"."+year;
+    h3.innerHTML = "Todesfälle bis zum "+dateString;
     div.appendChild(h3);
     var table = document.createElement("table");
     table.id = "deathTable";
@@ -204,7 +214,7 @@ function loadDeaths() {
     div.appendChild(table);
     div = document.getElementById("mortality");
     h3 = document.createElement("h3");
-    h3.innerHTML = "Mortalität bis zum "+latestDeaths.date+"</h3>";
+    h3.innerHTML = "Mortalität bis zum "+dateString+"</h3>";
     div.prepend(h3);
     div.appendChild(mortalitytable);
 
@@ -264,7 +274,12 @@ function loadHospitalised() {
     var mtotal = latestHospitalisedArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
     var div = document.getElementById("hospitalised");
     var h3 = document.createElement("h3");
-    h3.innerHTML = "Hospitalisierte Fälle bis zum "+latestHospitalised.date;
+    var dateParts = latestHospitalised.date.split("-");
+    var year = dateParts[0];
+    var month = parseInt(dateParts[1]);
+    var day = parseInt(dateParts[2]);
+    var dateString = day+"."+month+"."+year;
+    h3.innerHTML = "Hospitalisierte Fälle bis zum "+dateString;
     div.appendChild(h3);
     var table = document.createElement("table");
     table.id = "hospitalisedTable";
@@ -320,7 +335,7 @@ function loadHospitalised() {
     div.appendChild(table);
     div = document.getElementById("hosprate");
     h3 = document.createElement("h3");
-    h3.innerHTML = "Hospitalisationsrate bis zum "+latestHospitalised.date+"</h3>";
+    h3.innerHTML = "Hospitalisationsrate bis zum "+dateString+"</h3>";
     div.prepend(h3);
     div.appendChild(hospratetable);
 
