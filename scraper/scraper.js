@@ -91,5 +91,14 @@ function parseExcel() {
   console.log("Incidences:");
   console.log(incidences);
 
+  var totals = result["COVID19 Epikurve"];
+  data = totals.splice(4);
+  var total = data.reduce(function(acc, val) { return acc + val.B; }, 0);
+  console.log("BAG Total: "+total);
+
+  var dateString = totals[0].A
+  var length = dateString.length;;
+  var subDate = dateString.substring(length-20,length-10);
+  console.log("Date: " + subDate);
   //fs.unlink("temp.xlsx", function() { console.log("deleted") });
 }
