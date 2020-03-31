@@ -1,0 +1,24 @@
+{
+  "name": "bag_excel_scraper",
+  "version": "1.0.0",
+  "description": "Tool to scrape the BAG-Excel-File",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://rsalzer@github.com/rsalzer/COVID_19_AGE.git"
+  },
+  "author": "Robert Salzer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rsalzer/COVID_19_AGE/issues"
+  },
+  "homepage": "https://github.com/rsalzer/COVID_19_AGE#readme",
+  "dependencies": {
+    "convert-excel-to-json": "^1.6.1",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0"
+  }
+}
