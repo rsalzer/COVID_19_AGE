@@ -103,48 +103,38 @@ function parseExcel() {
   var date = dateString.substring(length-20,length-10);
   console.log("Date: " + date);
 
-  var allAgesDetailsCSV = "";
-  allAgesDetailsCSV += date;
-  ageLabels.forEach((item, i) => {
-    var singleCase = cases.filter(function(d) { if(d.age==item) return d});
-    if(singleCase.length>0) {
-      allAgesDetailsCSV += ","+singleCase[0].f;
-    }
-    else {
-      allAgesDetailsCSV += "0";
-    }
-  });
-  ageLabels.forEach((item, i) => {
-    var singleCase = cases.filter(function(d) { if(d.age==item) return d});
-    if(singleCase.length>0) {
-      allAgesDetailsCSV += ","+singleCase[0].m;
-    }
-    else {
-      allAgesDetailsCSV += ",0";
-    }
-  });
-  console.log("All ages details CSV: "+allAgesDetailsCSV);
-
-  var deathsCSV = "";
-  deathsCSV += date;
-  ageLabels.forEach((item, i) => {
-    var singleCase = deaths.filter(function(d) { if(d.age==item) return d});
-    if(singleCase.length>0) {
-      deathsCSV += ","+singleCase[0].f;
-    }
-    else {
-      deathsCSV += ",0";
-    }
-  });
-  ageLabels.forEach((item, i) => {
-    var singleCase = deaths.filter(function(d) { if(d.age==item) return d});
-    if(singleCase.length>0) {
-      deathsCSV += ","+singleCase[0].m;
-    }
-    else {
-      deathsCSV += ",0";
-    }
-  });
-  console.log("Deaths CSV: "+deathsCSV);
+  var allAgesDetailCSVRow = makeCSVRow(cases, date);
+  allAgesDetailCSVRow+= ","+total; //Add BAG-Total
+  console.log("All ages details CSV: "+allAgesDetailCSVRow);
+  var deathCSVRow = makeCSVRow(deaths, date);
+  console.log("Deaths CSV: "+deathCSVRow);
+  var incidenceCSVRow = makeCSVRow(incidences, date);
+  console.log("Insidences CSV: "+incidenceCSVRow);
+  var hospitalicedCSVRow = makeCSVRow(hospitalised, date);
+  console.log("Hospitalised CSV: "+hospitalicedCSVRow);
   //fs.unlink("temp.xlsx", function() { console.log("deleted") });
+}
+
+function makeCSVRow(array, date) {
+  var csv = "";
+  csv += date;
+  ageLabels.forEach((item, i) => {
+    var singleCase = array.filter(function(d) { if(d.age==item) return d});
+    if(singleCase.length>0) {
+      csv += ","+singleCase[0].f;
+    }
+    else {
+      csv += ",0";
+    }
+  });
+  ageLabels.forEach((item, i) => {
+    var singleCase = array.filter(function(d) { if(d.age==item) return d});
+    if(singleCase.length>0) {
+      csv += ","+singleCase[0].m;
+    }
+    else {
+      csv += ",0";
+    }
+  });
+  return csv;
 }
