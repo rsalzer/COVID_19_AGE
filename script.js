@@ -53,7 +53,7 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
     return latest[key];
   });
   var ftotal = latestArray.slice(1,10).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
-  var mtotal = latestArray.slice(11,20).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+  var mtotal = latestArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
   var div = document.getElementById("latest");
   var dateParts = latest.date.split("-");
   var year = dateParts[0];
