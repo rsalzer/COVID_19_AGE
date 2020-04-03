@@ -35,7 +35,7 @@ Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 // });
 
 
-d3.csv('allages.csv', function(error, csvdata) {
+d3.csv('data/allages.csv', function(error, csvdata) {
   data = csvdata;
   var div = document.getElementById("maindiv");
   chartSingleAgeSex('f');
@@ -45,7 +45,7 @@ d3.csv('allages.csv', function(error, csvdata) {
   }
 });
 
-d3.csv('allagesdetails.csv', function(error, csvdata) {
+d3.csv('data/allagesdetails.csv', function(error, csvdata) {
   detaildata = csvdata;
   var latest = detaildata[detaildata.length-1];
   var keys = Object.keys(latest);
@@ -141,7 +141,7 @@ d3.csv('allagesdetails.csv', function(error, csvdata) {
 
 
 function loadDeaths() {
-  d3.csv('deaths.csv', function(error, csvdata) {
+  d3.csv('data/deaths.csv', function(error, csvdata) {
     deaths = csvdata;
     var latestDeaths = deaths[deaths.length-1];
     var latest = detaildata[detaildata.length-1];
@@ -262,7 +262,7 @@ function loadDeaths() {
 }
 
 function loadHospitalised() {
-  d3.csv('hospitalised.csv', function(error, csvdata) {
+  d3.csv('data/hospitalised.csv', function(error, csvdata) {
     hospitalised = csvdata;
     var latestHospitalised = hospitalised[hospitalised.length-1];
     var latest = detaildata[detaildata.length-1];
