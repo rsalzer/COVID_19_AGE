@@ -433,13 +433,13 @@ function pieChartSingleAgeSexLatest(sex) {
 }
 
 function chartSingleAgeSex(sex) {
-  var div = document.getElementById("detail");
+  var div = document.getElementById("incidencescanvasdiv");
   var canvas = document.createElement("canvas");
-  //canvas.className  = "myClass";
-  canvas.id = 'chart'+sex;
   canvas.height=300;
-  canvas.width=500+data.length*30;
+  canvas.id = "incidences_"+sex;
+  canvas.height=300;
   div.appendChild(canvas);
+  //canvas.className  = "myClass";
   var dateLabels = data.map(function(d) {return d.date});
   var allAgeData = [];
   for(var i=0; i<ageLabels.length; i++) {
@@ -545,13 +545,27 @@ function chartSingleAgeSex(sex) {
 }
 
 function chartAgesBothSexes(age) {
-  var div = document.getElementById("detail");
+  var section = document.getElementById("detail");
+  var article = document.createElement("article");
+  article.id="detail_"+age;
+  var h3 = document.createElement("h3");
+  var text = document.createTextNode("Altersgruppe "+age);
+  h3.appendChild(text);
+  var a = document.createElement("a");
+  a.href = "#top";
+  a.innerHTML = "&#x2191;&#xFE0E;";
+  a.className = "toplink";
+  h3.appendChild(a);
+  article.appendChild(h3);
+  var div = document.createElement("div");
+  div.className = "canvas-dummy";
+  div.id = "container_"+age;
   var canvas = document.createElement("canvas");
-  //canvas.className  = "myClass";
-  canvas.id = 'chart'+age;
   canvas.height=300;
-  canvas.width=500+data.length*30;
+  canvas.id = age+"_incidences";
   div.appendChild(canvas);
+  article.appendChild(div);
+  section.appendChild(article);
   var dateLabels = data.map(function(d) {return d.date});
   var males = data.map(function(d) {return Math.round(10*parseFloat(d['m'+age]))/10});
   var females = data.map(function(d) {return Math.round(10*parseFloat(d['f'+age]))/10});
