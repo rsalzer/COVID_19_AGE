@@ -34,17 +34,27 @@ Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 //   lastUpdateDiv.innerHTML = "<i>Letztes Update der Daten: "+data[0].commit.committer.date.substring(0,10)+" ("+data[0].commit.message+")</i>";
 // });
 
-
-d3.csv('data/allages.csv', function(error, csvdata) {
-  data = csvdata;
+function processData() {
   var div = document.getElementById("maindiv");
   chartSingleAgeSex('f');
   chartSingleAgeSex('m');
   for(var i=0; i<ageLabels.length; i++) {
     chartAgesBothSexes(ageLabels[i]);
+    barChartDetails(ageLabels[i],'f');
+    barChartDetails(ageLabels[i],'m');
   }
-});
+}
 
+downloadAllAges();
+
+function downloadAllAges() {
+  d3.csv('data/allages.csv', function(error, csvdata) {
+    data = csvdata;
+  });
+  downloadAgesDetails();
+}
+
+function downloadAgesDetails() {
 d3.csv('data/allagesdetails.csv', function(error, csvdata) {
   detaildata = csvdata;
   var latest = detaildata[detaildata.length-1];
@@ -93,51 +103,9 @@ d3.csv('data/allagesdetails.csv', function(error, csvdata) {
   tr.innerHTML = "<th colspan=3>Zahl aller Meldungen</th><td></td><td></td><td>"+bag+"</td><td></td>";
   table.appendChild(tr);
   div.appendChild(table);
-
-  /*
-  var canvas = document.createElement("canvas");
-  //canvas.className  = "myClass";
-  canvas.id = 'piechart';
-  canvas.height=300;
-  canvas.width=500;
-  div.appendChild(canvas);
-  var labels = ageLabels.slice();
-  labels.push("fehlend");
-  var colours = Object.keys(ageColours).map(function(key){
-    return ageColours[key];
+  loadDeaths();
   });
-  var lastDate = data[data.length-1].date;
-  var pieChartLabel = "Fälle nach Alter "+latest.date;
-  var config = {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: totalArray,
-        backgroundColor: colours,
-        label: pieChartLabel
-      }],
-      labels: labels
-    },
-    options: {
-      responsive: false,
-      legend: {
-        display: true,
-        position: 'right'
-      },
-      title: {
-        display: true,
-        text: pieChartLabel
-      },
-      plugins: {
-        labels: true
-      }
-    }
-    };
-    var chart = new Chart(canvas.id,config);
-    */
-    loadDeaths();
-    loadHospitalised();
-});
+}
 
 
 function loadDeaths() {
@@ -218,46 +186,7 @@ function loadDeaths() {
     div.prepend(h3);
     div.appendChild(mortalitytable);
 
-    /*
-    var canvas = document.createElement("canvas");
-    //canvas.className  = "myClass";
-    canvas.id = 'piechartdeath';
-    canvas.height=300;
-    canvas.width=500;
-    div.appendChild(canvas);
-    var labels = ageLabels.slice();
-    var colours = Object.keys(ageColours).map(function(key){
-      return ageColours[key];
-    });
-    var lastDate = data[data.length-1].date;
-    var pieChartLabel = "Todesfälle nach Alter "+latestDeaths.date;
-    var config = {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: totalArray,
-          backgroundColor: colours,
-          label: pieChartLabel
-        }],
-        labels: labels
-      },
-      options: {
-        responsive: false,
-        legend: {
-          display: true,
-          position: 'right'
-        },
-        title: {
-          display: true,
-          text: pieChartLabel
-        },
-        plugins: {
-          labels: true
-        }
-      }
-      };
-      var chart = new Chart(canvas.id,config);
-      */
+    loadHospitalised();
   });
 }
 
@@ -339,46 +268,7 @@ function loadHospitalised() {
     div.prepend(h3);
     div.appendChild(hospratetable);
 
-    /*
-    var canvas = document.createElement("canvas");
-    //canvas.className  = "myClass";
-    canvas.id = 'piechartdeath';
-    canvas.height=300;
-    canvas.width=500;
-    div.appendChild(canvas);
-    var labels = ageLabels.slice();
-    var colours = Object.keys(ageColours).map(function(key){
-      return ageColours[key];
-    });
-    var lastDate = data[data.length-1].date;
-    var pieChartLabel = "Todesfälle nach Alter "+latestDeaths.date;
-    var config = {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: totalArray,
-          backgroundColor: colours,
-          label: pieChartLabel
-        }],
-        labels: labels
-      },
-      options: {
-        responsive: false,
-        legend: {
-          display: true,
-          position: 'right'
-        },
-        title: {
-          display: true,
-          text: pieChartLabel
-        },
-        plugins: {
-          labels: true
-        }
-      }
-      };
-      var chart = new Chart(canvas.id,config);
-      */
+    processData();
   });
 }
 
@@ -613,6 +503,123 @@ function chartAgesBothSexes(age) {
             label: genderLabels.m
           }
       ]
+    }
+  });
+}
+
+
+function barChartDetails(age, sex) {
+  var filteredHospitalisedData = hospitalised.map(function(d) { return d[sex+age] });
+  var length = hospitalised.length;
+  var shortenedDetailData = detaildata.slice(detaildata.length-length);
+  var filteredDetailData = shortenedDetailData.map(function(d) { return d[sex+age] });
+  var shortenedDeathData = deaths.slice(deaths.length-length);
+  var filteredDeathData = shortenedDeathData.map(function(d) { return d[sex+age] });
+  var div = document.getElementById("container_"+age);
+  var canvas = document.createElement("canvas");
+  canvas.id = "details_"+age+"_"+sex;
+  canvas.height=300;
+  div.appendChild(canvas);
+  var dateLabels = hospitalised.map(function(d) {
+    var dateSplit = d.date.split("-");
+    var day = parseInt(dateSplit[2]);
+    var month = parseInt(dateSplit[1])-1;
+    var year = parseInt(dateSplit[0]);
+    var date = new Date(year,month,day);
+    return date;
+  });
+  var datasets = [];
+  datasets.push({
+    label: "Fälle",
+    data: filteredDetailData,
+    fill: false,
+    cubicInterpolationMode: 'monotone',
+    spanGaps: true,
+    borderColor: '#CF5F5F',
+    backgroundColor: '#CF5F5F',
+    datalabels: {
+      align: 'end',
+      anchor: 'end'
+    }
+  });
+  datasets.push({
+    label: "Hospitalisiert",
+    data: filteredHospitalisedData,
+    fill: false,
+    cubicInterpolationMode: 'monotone',
+    spanGaps: true,
+    borderColor: '#CCCC00',
+    backgroundColor: '#CCCC00',
+    datalabels: {
+      align: 'end',
+      anchor: 'end'
+    }
+  });
+  datasets.push({
+    label: "Verstorben",
+    data: filteredDeathData,
+    fill: false,
+    cubicInterpolationMode: 'monotone',
+    spanGaps: true,
+    borderColor: '#010101',
+    backgroundColor: '#010101',
+    datalabels: {
+      align: 'end',
+      anchor: 'end'
+    }
+  });
+  var chart = new Chart(canvas.id, {
+    type: 'line',
+    options: {
+      responsive: false,
+      layout: {
+          padding: {
+              right: 20
+          }
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      },
+      title: {
+        display: true,
+        text: "Detailzahlen Altersgruppe "+age+" "+genderLabels[sex]
+      },
+      tooltips: {
+        mode: "index",
+        intersect: false,
+        position: 'average'
+      },
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            tooltipFormat: 'DD.MM.YYYY',
+            unit: 'day',
+            displayFormats: {
+              day: 'DD.MM'
+            }
+          },
+          ticks: {
+            min: new Date("2020-03-27T23:00:00"),
+            max: new Date(),
+          }
+        }],
+        yAxes: [{
+          type: 'linear',
+          ticks: {
+            beginAtZero: true,
+            suggestedMax: 10,
+          },
+        }]
+      },
+      plugins: {
+        datalabels: false
+      }
+    },
+    data: {
+      labels: dateLabels,
+      datasets: datasets
     }
   });
 }
