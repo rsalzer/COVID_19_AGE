@@ -90,7 +90,7 @@ d3.csv('data/allagesdetails.csv', function(error, csvdata) {
   var bag = parseInt(latest.totalbag);
   var all = ftotal+mtotal;
   var missing = bag-all;
-  var missingPerc = Math.round(missing/bag*100);
+  var missingPerc = Math.round(missing/bag*1000)/10;
   var tr = document.createElement("tr");
   var percentagef = Math.round(ftotal/all*1000)/10;
   var percentagem = Math.round(mtotal/all*1000)/10;
