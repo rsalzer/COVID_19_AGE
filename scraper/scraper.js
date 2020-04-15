@@ -6,6 +6,7 @@ const excelToJson = require('convert-excel-to-json');
 const bagExcelLocation = "https://www.bag.admin.ch/dam/bag/de/dokumente/mt/k-und-i/aktuelle-ausbrueche-pandemien/2019-nCoV/covid-19-datengrundlage-lagebericht.xlsx.download.xlsx/200325_Datengrundlage_Grafiken_COVID-19-Bericht.xlsx";
 
 const ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
+var appendToFiles = false;
 
 var myArgs = process.argv.slice(2);
 switch (myArgs[0]) {
@@ -15,6 +16,9 @@ case 'download':
     break;
 case 'parse':
     console.log('Parsing temp.xlsx');
+    if(myArgs[1] == "append") {
+      appendToFiles = true;
+    }
     parseExcel();
     break;
 default:
@@ -113,6 +117,43 @@ function parseExcel() {
   var hospitalicedCSVRow = makeCSVRow(hospitalised, date);
   console.log("Hospitalised CSV: "+hospitalicedCSVRow);
   //fs.unlink("temp.xlsx", function() { console.log("deleted") });
+
+  if(appendToFiles) {
+    console.log("** Checking if date already exists **");
+    fs.readFile('../data/deaths.csv', 'utf-8', function(err, data) {
+        if (err) throw err;
+
+        var lines = data.trim().split('\n');
+        var lastLine = lines.slice(-1)[0];
+
+        var fields = lastLine.split(',');
+        var fileDate = fields[0];
+
+        console.log("FileDate = "+fileDate);
+        console.log("Date of BAG = "+date);
+
+        if(fileDate==date) {
+          console.log("No new data ... doing nothing!");
+          return;
+        }
+
+        console.log("New Data ... lets append!");
+        console.log("** Appending to files **");
+        fs.appendFileSync('../data/deaths.csv', deathCSVRow);
+        fs.appendFileSync('../data/allages.csv', incidenceCSVRow);
+        fs.appendFileSync('../data/allagesdetails.csv', allAgesDetailCSVRow);
+        fs.appendFileSync('../data/hospitalised.csv', hospitalicedCSVRow);
+        console.log("** Done appending **");
+
+        var oldPath = 'temp.xlsx'
+        var newPath = '../bagfiles/'+date+'.xlsx'
+
+        fs.rename(oldPath, newPath, function (err) {
+          if (err) throw err
+          console.log('Successfully renamed temp.xlsx - AKA moved!')
+        })
+    });
+  }
 }
 
 function makeCSVRow(array, date) {
