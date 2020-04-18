@@ -97,8 +97,8 @@ function parseExcel() {
   console.log("Incidences:");
   console.log(incidences);
 
-  var totals = result["COVID19 Epikurve"];
-  data = totals.splice(4);
+  var totals = result["COVID19 Zahlen"];
+  data = totals.splice(5);
   var total = data.reduce(function(acc, val) { return acc + val.B; }, 0);
   console.log("BAG Total: "+total);
 
