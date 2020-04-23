@@ -29,7 +29,7 @@ var ageColours = {
 
 Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 
-// d3.json('https://api.github.com/repos/rsalzer/COVID_19_AGE/commits?path=allages.csv&page=1&per_page=1', function(error, data) {
+// d3.json('https://api.github.com/repos/rsalzer/COVID_19_AGE/commits?path=incidences.csv&page=1&per_page=1', function(error, data) {
 //   var lastUpdateDiv = document.getElementById('latestUpdate');
 //   lastUpdateDiv.innerHTML = "<i>Letztes Update der Daten: "+data[0].commit.committer.date.substring(0,10)+" ("+data[0].commit.message+")</i>";
 // });
@@ -48,7 +48,7 @@ function processData() {
 downloadAllAges();
 
 function downloadAllAges() {
-  d3.csv('data/allages.csv', function(error, csvdata) {
+  d3.csv('data/incidences.csv', function(error, csvdata) {
     data = csvdata;
   });
   downloadAgesDetails();

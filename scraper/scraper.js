@@ -140,7 +140,7 @@ function parseExcel() {
         console.log("New Data ... lets append!");
         console.log("** Appending to files **");
         fs.appendFileSync('../data/deaths.csv', deathCSVRow);
-        fs.appendFileSync('../data/allages.csv', incidenceCSVRow);
+        fs.appendFileSync('../data/incidences.csv', incidenceCSVRow);
         fs.appendFileSync('../data/allagesdetails.csv', allAgesDetailCSVRow);
         fs.appendFileSync('../data/hospitalised.csv', hospitalicedCSVRow);
         console.log("** Done appending **");
