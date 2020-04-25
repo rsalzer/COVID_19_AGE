@@ -42,11 +42,11 @@ function parseExcel() {
       sourceFile: 'temp.xlsx'
   });
   var deaths = result["COVID19 Altersverteilung TodF"];
-  var data = deaths.splice(5,10);
+  var data = deaths.splice(4,10);
 
   var deaths = [];
   data.forEach((item, i) => {
-    if(item.B!=null) {
+    if(item.B!=null || item.C!=null) {
       deaths.push({
         age: item.A.replace(/ /g,""),
         m: item.B,
