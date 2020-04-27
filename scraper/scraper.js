@@ -58,7 +58,7 @@ function parseExcel() {
   console.log(deaths);
 
   var hospit = result["COVID19 Altersverteilung Hospit"];
-  data = hospit.splice(5,20);
+  data = hospit.splice(4,20);
 
   var hospitalised = [];
   data.forEach((item, i) => {
