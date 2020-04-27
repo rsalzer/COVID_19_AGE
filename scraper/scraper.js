@@ -139,10 +139,10 @@ function parseExcel() {
 
         console.log("New Data ... lets append!");
         console.log("** Appending to files **");
-        fs.appendFileSync('../data/deaths.csv', deathCSVRow);
-        fs.appendFileSync('../data/incidences.csv', incidenceCSVRow);
-        fs.appendFileSync('../data/allagesdetails.csv', allAgesDetailCSVRow);
-        fs.appendFileSync('../data/hospitalised.csv', hospitalicedCSVRow);
+        fs.appendFileSync('../data/deaths.csv', '\r\n'+deathCSVRow);
+        fs.appendFileSync('../data/incidences.csv', '\r\n'+incidenceCSVRow);
+        fs.appendFileSync('../data/allagesdetails.csv', '\r\n'+allAgesDetailCSVRow);
+        fs.appendFileSync('../data/hospitalised.csv', '\r\n'+hospitalicedCSVRow);
         console.log("** Done appending **");
 
         var oldPath = 'temp.xlsx'
