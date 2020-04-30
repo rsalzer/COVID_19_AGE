@@ -33,6 +33,7 @@ Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 //   var lastUpdateDiv = document.getElementById('latestUpdate');
 //   lastUpdateDiv.innerHTML = "<i>Letztes Update der Daten: "+data[0].commit.committer.date.substring(0,10)+" ("+data[0].commit.message+")</i>";
 // });
+setLanguageNav();
 
 function processData() {
   var div = document.getElementById("maindiv");
@@ -70,7 +71,7 @@ d3.csv('data/allagesdetails.csv', function(error, csvdata) {
   var month = parseInt(dateParts[1]);
   var day = parseInt(dateParts[2]);
   var dateString = day+"."+month+"."+year;
-  div.innerHTML = "<h3>Positiv getestet bis zum "+dateString+"</h3>"
+  div.innerHTML = "<h3><span>Positiv getestet bis zum </span>"+dateString+"</h3>"
   var table = document.createElement("table");
   table.id = "firstTable";
   table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
@@ -126,7 +127,7 @@ function loadDeaths() {
     var month = parseInt(dateParts[1]);
     var day = parseInt(dateParts[2]);
     var dateString = day+"."+month+"."+year;
-    h3.innerHTML = "Todesfälle bis zum "+dateString;
+    h3.innerHTML = '<span>Todesfälle bis zum </span>'+dateString;
     div.appendChild(h3);
     var table = document.createElement("table");
     table.id = "deathTable";
@@ -182,7 +183,7 @@ function loadDeaths() {
     div.appendChild(table);
     div = document.getElementById("mortality");
     h3 = document.createElement("h3");
-    h3.innerHTML = "Mortalität bis zum "+dateString+"</h3>";
+    h3.innerHTML = "<span>Mortalität bis zum </span>"+dateString+"</h3>";
     div.prepend(h3);
     div.appendChild(mortalitytable);
 
@@ -208,7 +209,7 @@ function loadHospitalised() {
     var month = parseInt(dateParts[1]);
     var day = parseInt(dateParts[2]);
     var dateString = day+"."+month+"."+year;
-    h3.innerHTML = "Hospitalisierte Fälle bis zum "+dateString;
+    h3.innerHTML = "<span>Hospitalisierte Fälle bis zum </span>"+dateString;
     div.appendChild(h3);
     var table = document.createElement("table");
     table.id = "hospitalisedTable";
@@ -264,11 +265,11 @@ function loadHospitalised() {
     div.appendChild(table);
     div = document.getElementById("hosprate");
     h3 = document.createElement("h3");
-    h3.innerHTML = "Hospitalisationsrate bis zum "+dateString+"</h3>";
+    h3.innerHTML = "<span>Hospitalisationsrate bis zum </span>"+dateString+"</h3>";
     div.prepend(h3);
     div.appendChild(hospratetable);
 
-    processData();
+    setTimeout(function(){ processData(); }, 200);
   });
 }
 
@@ -329,6 +330,7 @@ function chartSingleAgeSex(sex) {
   canvas.id = "incidences_"+sex;
   canvas.height=300;
   div.appendChild(canvas);
+  div.scrollLeft = 1700;
   //canvas.className  = "myClass";
   var dateLabels = data.map(function(d) {return d.date});
   var allAgeData = [];
@@ -354,7 +356,7 @@ function chartSingleAgeSex(sex) {
       },
       title: {
         display: true,
-        text: "Fälle nach Alter per 100'000 Bewohner "+genderLabels[sex]
+        text: _("Fälle nach Alter per 100'000 Bewohner")+" "+_(genderLabels[sex])
       },
       tooltips: {
 						mode: "index",
@@ -363,9 +365,13 @@ function chartSingleAgeSex(sex) {
       scales: {
       yAxes: [{
         stacked: false,
+        position: 'right',
         ticks: {
           beginAtZero: true
         },
+        gridLines: {
+          color: inDarkMode() ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+        }
       }]
   },
   plugins: {
@@ -439,7 +445,7 @@ function chartAgesBothSexes(age) {
   var article = document.createElement("article");
   article.id="detail_"+age;
   var h3 = document.createElement("h3");
-  var text = document.createTextNode("Altersgruppe "+age);
+  var text = document.createTextNode(_("Altersgruppe")+" "+_(age));
   h3.appendChild(text);
   var a = document.createElement("a");
   a.href = "#top";
@@ -469,7 +475,7 @@ function chartAgesBothSexes(age) {
       },
       title: {
         display: true,
-        text: "Fälle per 100'000 Bewohner für Altersgruppe "+age
+        text: _("Fälle per 100'000 Bewohner für Altersgruppe")+" "+age
       },
       tooltips: {
 						mode: "index",
@@ -478,6 +484,7 @@ function chartAgesBothSexes(age) {
       scales: {
       yAxes: [{
         stacked: false,
+        position: 'right',
         ticks: {
           beginAtZero: true
         },
@@ -494,13 +501,13 @@ function chartAgesBothSexes(age) {
             data: females,
             backgroundColor: genderColours.f,
             borderWidth: 1,
-            label: genderLabels.f
+            label: _(genderLabels.f)
           },
           {
             data: males,
             backgroundColor: genderColours.m,
             borderWidth: 1,
-            label: genderLabels.m
+            label: _(genderLabels.m)
           }
       ]
     }
@@ -520,6 +527,7 @@ function barChartDetails(age, sex) {
   canvas.id = "details_"+age+"_"+sex;
   canvas.height=300;
   div.appendChild(canvas);
+  div.scrollLeft = 1700;
   var dateLabels = hospitalised.map(function(d) {
     var dateSplit = d.date.split("-");
     var day = parseInt(dateSplit[2]);
@@ -530,7 +538,7 @@ function barChartDetails(age, sex) {
   });
   var datasets = [];
   datasets.push({
-    label: "Fälle",
+    label: _("Fälle"),
     data: filteredDetailData,
     fill: false,
     cubicInterpolationMode: 'monotone',
@@ -543,7 +551,7 @@ function barChartDetails(age, sex) {
     }
   });
   datasets.push({
-    label: "Hospitalisiert",
+    label: _("Hospitalisiert"),
     data: filteredHospitalisedData,
     fill: false,
     cubicInterpolationMode: 'monotone',
@@ -556,7 +564,7 @@ function barChartDetails(age, sex) {
     }
   });
   datasets.push({
-    label: "Verstorben",
+    label: _("Verstorben"),
     data: filteredDeathData,
     fill: false,
     cubicInterpolationMode: 'monotone',
@@ -583,7 +591,7 @@ function barChartDetails(age, sex) {
       },
       title: {
         display: true,
-        text: "Detailzahlen Altersgruppe "+age+" "+genderLabels[sex]
+        text: _("Detailzahlen Altersgruppe ")+age+" "+_(genderLabels[sex])
       },
       tooltips: {
         mode: "index",
@@ -603,14 +611,21 @@ function barChartDetails(age, sex) {
           ticks: {
             min: new Date("2020-03-27T23:00:00"),
             max: new Date(),
+          },
+          gridLines: {
+            color: inDarkMode() ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
           }
         }],
         yAxes: [{
           type: 'linear',
+          position: 'right',
           ticks: {
             beginAtZero: true,
             suggestedMax: 10,
           },
+          gridLines: {
+            color: inDarkMode() ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+          }
         }]
       },
       plugins: {
@@ -622,4 +637,70 @@ function barChartDetails(age, sex) {
       datasets: datasets
     }
   });
+}
+
+var language;
+function setLanguageNav() {
+  var lang = window.navigator.userLanguage || window.navigator.language;
+  var langParameter = getParameterValue("lang");
+  if (langParameter != "") lang = langParameter;
+  lang = lang.split("-")[0]; //not interested in de-CH de-DE etc.
+  switch(lang) {
+    case 'de':
+      break;
+    default:
+      lang = 'en';
+  }
+  language = lang;
+  var href;
+  var ul = document.getElementsByTagName("ul")[0];
+  var li = document.createElement("li");
+  if(lang=="de") {
+    li.className = "here";
+    href = "#"
+  }
+  else {
+    href = "index.html?lang=de";
+  }
+  li.innerHTML = '<a href="'+href+'">DE</a>';
+  ul.appendChild(li);
+  /*
+  li = document.createElement("li");
+  if(lang=="fr") {
+    li.className = "here";
+    href = "#"
+  }
+  else {
+    href = "index.html?lang=fr";
+  }
+  li.innerHTML = '<a href="'+href+'">FR</a>';
+  ul.appendChild(li);
+  li = document.createElement("li");
+  if(lang=="it") {
+    li.className = "here";
+    href = "#"
+  }
+  else {
+    href = "index.html?lang=it";
+  }
+  li.innerHTML = '<a href="'+href+'">IT</a>';
+  ul.appendChild(li);
+  */
+  li = document.createElement("li");
+  if(lang=="en") {
+    li.className = "here";
+    href = "#"
+  }
+  else {
+    href = "index.html?lang=en";
+  }
+  li.innerHTML = '<a href="'+href+'">EN</a>';
+  ul.appendChild(li);
+}
+
+function inDarkMode() {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return true;
+  }
+  return false;
 }

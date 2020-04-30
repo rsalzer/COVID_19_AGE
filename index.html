@@ -11,10 +11,11 @@
     <meta property="og:description" content="Visualisierung der Corona-Fälle in der Schweiz nach Alter, basierend auf den Grafiken des BAG">
     <meta property="og:image" content="https://rsalzer.github.io/COVID_19_AGE/preview2.jpg">
     <!--meta property="og:image" content="https://rsalzer.github.io/COVID_19_CH/preview2.png" -->
-    <script src="https://d3js.org/d3.v3.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+    <link rel="localization" hreflang="en" href="lang/en.json" type="application/vnd.oftn.l10n+json"/>
+    <script src="js/d3.v3.js"></script>
+    <script src="js/Chart.bundle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- script async src="https://www.googletagmanager.com/gtag/js?id=UA-160625595-3"></script>
     <script>
@@ -33,7 +34,7 @@
         function gaOptout() {
             document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
             window[disableStr] = true;
-            alert('Das Tracking ist jetzt deaktiviert');
+            alert(_('Das Tracking ist jetzt deaktiviert'));
         }
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -45,13 +46,13 @@
         ga('send', 'pageview');
     </script>
   </head>
-  <body>
+  <body onload="loaded()">
     <a name="top"></a>
     <nav id="page-nav">
   		<ul>
   			<li><a title="Schweiz" href="https://rsalzer.github.io/COVID_19_CH">Schweiz</a></li>
   			<!-- li><a title="Detailliertere Visualisierung für den Kanton Zürich" href="https://rsalzer.github.io/COVID_19_KT_ZH/">Zürich</a></li -->
-  			<li class="here"><a href="#">Alter</a></li>
+  			<li class="here"><a href="#">Nach Alter</a></li>
   		</ul>
 	  </nav>
     <main>
@@ -109,6 +110,8 @@
         Diese Seite nutzt Google Analytics. <a href="javascript:gaOptout()">Hier klicken für ein Opt-out</a>
       </p>
     </footer>
-    <script src="script.js"></script>
+    <script src="js/translate.js"></script>
+    <script src="js/l10n.js"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>
