@@ -147,11 +147,11 @@ table tr th:nth-child(1) {
 }
 table tr td:nth-child(2),
 table tr th:nth-child(2) {
-	text-align: left;
+	text-align: right;
 	white-space: nowrap;
 }
 table tr td:nth-child(2) {
-	opacity: 0.5;
+
 }
 table tr th:nth-child(3),
 table tr td:nth-child(3) {
