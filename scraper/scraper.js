@@ -133,7 +133,7 @@ function parseExcel() {
         console.log("Date of BAG = "+date);
 
         if(fileDate==date) {
-          console.log("No new data ... doing nothing!");
+          console.log('\x1b[41m%s\x1b[0m', "No new data ... doing nothing!");
           return;
         }
 
@@ -150,7 +150,7 @@ function parseExcel() {
 
         fs.rename(oldPath, newPath, function (err) {
           if (err) throw err
-          console.log('Successfully renamed temp.xlsx - AKA moved!')
+          console.log('\x1b[42m%s\x1b[0m', 'Successfully renamed temp.xlsx - AKA moved!')
         })
     });
   }
