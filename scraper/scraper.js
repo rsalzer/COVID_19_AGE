@@ -97,6 +97,21 @@ function parseExcel() {
   console.log("Incidences:");
   console.log(incidences);
 
+  var isolation = result["COVID19 Isolation Quarantäne"];
+  data = isolation.splice(4,27);
+  var isolations = [];
+  data.forEach((item, i) => {
+    if(item.A!=null) {
+      isolations.push({
+        abbreviation_canton_and_fl: item.A,
+        date: item.B,
+        current_isolated: item.C,
+        current_quarantined: item.D
+      });
+    }
+  });
+  var isolationCSV = makeIsolationCSV(isolations);
+
   var totals = result["COVID19 Zahlen"];
   data = totals.splice(5);
   var total = data.reduce(function(acc, val) { return acc + val.B; }, 0);
@@ -143,6 +158,7 @@ function parseExcel() {
         fs.appendFileSync('../data/incidences.csv', '\r\n'+incidenceCSVRow);
         fs.appendFileSync('../data/allagesdetails.csv', '\r\n'+allAgesDetailCSVRow);
         fs.appendFileSync('../data/hospitalised.csv', '\r\n'+hospitalicedCSVRow);
+        fs.writeFileSync('../data/current_isolated.csv', isolationCSV);
         console.log("** Done appending **");
 
         var oldPath = 'temp.xlsx'
@@ -177,5 +193,25 @@ function makeCSVRow(array, date) {
       csv += ",0";
     }
   });
+  return csv;
+}
+
+function makeIsolationCSV(array) {
+  var csv = "date,abbreviation_canton_and_fl,current_isolated,current_quarantined\n";
+  const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  array.forEach((item,i) => {
+    if(item.current_isolated!=undefined) {
+      var csvline = "";
+      const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat.formatToParts(item.date);
+      csvline += `${year}-${month}-${day},`
+      csvline += item.abbreviation_canton_and_fl+",";
+      if(item.current_isolated!=undefined) csvline += item.current_isolated;
+      csvline += ",";
+      if(item.current_quarantined!=undefined) csvline += item.current_quarantined;
+      csvline += "\n";
+      csv += csvline;
+    }
+  });
+  console.log(csv);
   return csv;
 }
