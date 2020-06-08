@@ -12,6 +12,9 @@ var myArgs = process.argv.slice(2);
 switch (myArgs[0]) {
 case 'download':
     console.log("Downloading the BAG-File");
+    if(myArgs[1] == "append") {
+      appendToFiles = true;
+    }
     downloadFile();
     break;
 case 'parse':
@@ -32,7 +35,7 @@ function downloadFile() {
 
       file.on('finish', function() {
         console.log("Finish downloading");
-        //parseExcel();
+        if(appendToFiles) parseExcel();
       });
   });
 }
