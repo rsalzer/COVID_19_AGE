@@ -101,9 +101,10 @@ function parseExcel() {
   console.log(incidences);
 
   var isolation = result["COVID19 Isolation Quarantäne"];
-  data = isolation.splice(4,27);
-  var isolations = [];
-  data.forEach((item, i) => {
+  if(isolation) {
+    data = isolation.splice(4,27);
+    var isolations = [];
+    data.forEach((item, i) => {
     if(item.A!=null) {
       isolations.push({
         abbreviation_canton_and_fl: item.A,
@@ -112,8 +113,9 @@ function parseExcel() {
         current_quarantined: item.D
       });
     }
+    var isolationCSV = makeIsolationCSV(isolations);
   });
-  var isolationCSV = makeIsolationCSV(isolations);
+  }
 
   var totals = result["COVID19 Zahlen"];
   data = totals.splice(5);
@@ -161,7 +163,7 @@ function parseExcel() {
         fs.appendFileSync('../data/incidences.csv', '\r\n'+incidenceCSVRow);
         fs.appendFileSync('../data/allagesdetails.csv', '\r\n'+allAgesDetailCSVRow);
         fs.appendFileSync('../data/hospitalised.csv', '\r\n'+hospitalicedCSVRow);
-        fs.writeFileSync('../data/current_isolated.csv', isolationCSV);
+        if(isolationCSV!=undefined) fs.writeFileSync('../data/current_isolated.csv', isolationCSV);
         console.log("** Done appending **");
 
         var oldPath = 'temp.xlsx'
