@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const excelToJson = require('convert-excel-to-json');
 
-
+const cantons = ['AG', 'AI', 'AR', 'BE', 'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU', 'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG', 'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH', 'FL'];
 const bagExcelLocation = "https://www.bag.admin.ch/dam/bag/de/dokumente/mt/k-und-i/aktuelle-ausbrueche-pandemien/2019-nCoV/covid-19-datengrundlage-lagebericht.xlsx.download.xlsx/200325_Datengrundlage_Grafiken_COVID-19-Bericht.xlsx";
 
 const ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
@@ -101,6 +101,7 @@ function parseExcel() {
   console.log(incidences);
 
   var isolation = result["COVID19 Isolation Quarantäne"];
+  var isolationCSV = null;
   if(isolation) {
     data = isolation.splice(4,27);
     var isolations = [];
@@ -113,9 +114,11 @@ function parseExcel() {
         current_quarantined: item.D
       });
     }
-    var isolationCSV = makeIsolationCSV(isolations);
-  });
+    });
+    isolationCSV = makeIsolationCSV(isolations);
+    console.log(isolationCSV);
   }
+
 
   var totals = result["COVID19 Zahlen"];
   data = totals.splice(5);
@@ -126,6 +129,25 @@ function parseExcel() {
   var length = dateString.length;;
   var date = dateString.substring(length-20,length-10);
   console.log("Date: " + date);
+
+  var casesPerCantons = result["COVID19 Kantone"];
+  var data = casesPerCantons.splice(4,29);
+
+  var dateObj = {};
+  var dateObj = {};
+  dateObj.date = date;
+
+  data.forEach((item, i) => {
+    if(item.B!=null && item.A!=null && item.A.length<3) {
+      var singleCanton = {};
+      singleCanton.cases = item.B,
+      singleCanton.incidences = item.C
+      dateObj[item.A.replace(/ /g,"")] = singleCanton;
+    }
+  });
+
+  var cantonRow = makeCantonCSVRow(dateObj);
+  console.log("Canton row: "+cantonRow);
 
   var allAgesDetailCSVRow = makeCSVRow(cases, date);
   allAgesDetailCSVRow+= ","+total; //Add BAG-Total
@@ -163,7 +185,8 @@ function parseExcel() {
         fs.appendFileSync('../data/incidences.csv', '\r\n'+incidenceCSVRow);
         fs.appendFileSync('../data/allagesdetails.csv', '\r\n'+allAgesDetailCSVRow);
         fs.appendFileSync('../data/hospitalised.csv', '\r\n'+hospitalicedCSVRow);
-        if(isolationCSV!=undefined) fs.writeFileSync('../data/current_isolated.csv', isolationCSV);
+        fs.appendFileSync('../data/casesPerCanton.csv', '\r\n'+cantonRow);
+        if(isolationCSV!=null) fs.writeFileSync('../data/current_isolated.csv', isolationCSV);
         console.log("** Done appending **");
 
         var oldPath = 'temp.xlsx'
@@ -175,6 +198,22 @@ function parseExcel() {
         })
     });
   }
+}
+
+function makeCantonCSVRow(obj) {
+  var csv = "";
+  csv += obj.date;
+  for(var i=0; i<cantons.length; i++) {
+    var canton = cantons[i];
+    var cantonObj = obj[canton];
+    if(cantonObj!=null && cantonObj.cases!=null) {
+      csv += ","+cantonObj.cases;
+    }
+    else {
+      csv += ",";
+    }
+  }
+  return csv;
 }
 
 function makeCSVRow(array, date) {
@@ -217,6 +256,5 @@ function makeIsolationCSV(array) {
       csv += csvline;
     }
   });
-  console.log(csv);
   return csv;
 }
