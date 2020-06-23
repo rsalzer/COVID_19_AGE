@@ -1,5 +1,5 @@
 date,abbreviation_canton_and_fl,current_isolated,current_quarantined
-2020-06-19,AG,19,23
+2020-06-22,AG,19,29
 2020-06-18,AI,0,0
 2020-06-18,AR,0,0
 2020-06-18,BE,19,95
@@ -16,8 +16,8 @@ date,abbreviation_canton_and_fl,current_isolated,current_quarantined
 2020-06-21,NW,0,1
 2020-06-18,OW,0,0
 2020-06-18,SG,12,26
-2020-06-21,SH,2,19
-2020-06-19,SO,4,6
+2020-06-22,SH,0,3
+2020-06-22,SO,4,6
 2020-06-19,SZ,1,6
 2020-06-18,TG,1,6
 2020-06-18,TI,8,19
