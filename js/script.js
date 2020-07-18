@@ -48,69 +48,74 @@ function processData() {
 
 downloadAllAges();
 
+
+
 function downloadAllAges() {
-  d3.csv('data/incidences.csv', function(error, csvdata) {
+  var url = "https://raw.githubusercontent.com/rsalzer/COVID_19_BAG/master/";
+  d3.csv(url+'data/incidences.csv', function(error, csvdata) {
     data = csvdata;
   });
   downloadAgesDetails();
 }
 
 function downloadAgesDetails() {
-d3.csv('data/allagesdetails.csv', function(error, csvdata) {
-  detaildata = csvdata;
-  var latest = detaildata[detaildata.length-1];
-  var keys = Object.keys(latest);
-  var latestArray = keys.map(function(key){
-    return latest[key];
-  });
-  var ftotal = latestArray.slice(1,10).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
-  var mtotal = latestArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
-  var div = document.getElementById("latest");
-  var dateParts = latest.date.split("-");
-  var year = dateParts[0];
-  var month = parseInt(dateParts[1]);
-  var day = parseInt(dateParts[2]);
-  var dateString = day+"."+month+"."+year;
-  div.innerHTML = "<h3><span>Positiv getestet bis zum </span>"+dateString+"</h3>"
-  var table = document.createElement("table");
-  table.id = "firstTable";
-  table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
-  var totalArray = [];
-  for(var i=0; i<ageLabels.length; i++) {
+  var url = "https://raw.githubusercontent.com/rsalzer/COVID_19_BAG/master/";
+  d3.csv(url+'data/allagesdetails.csv', function(error, csvdata) {
+    detaildata = csvdata;
+    var latest = detaildata[detaildata.length-1];
+    var keys = Object.keys(latest);
+    var latestArray = keys.map(function(key){
+      return latest[key];
+    });
+    var ftotal = latestArray.slice(1,10).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+    var mtotal = latestArray.slice(10,19).reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+    var div = document.getElementById("latest");
+    var dateParts = latest.date.split("-");
+    var year = dateParts[0];
+    var month = parseInt(dateParts[1]);
+    var day = parseInt(dateParts[2]);
+    var dateString = day+"."+month+"."+year;
+    div.innerHTML = "<h3><span>Positiv getestet bis zum </span>"+dateString+"</h3>"
+    var table = document.createElement("table");
+    table.id = "firstTable";
+    table.innerHTML = "<tr><th>Alter</th><th>Frauen</th><th>%</th><th>Männer</th><th>%</th><th>Gesamt</th><th>%</th></tr>";
+    var totalArray = [];
+    for(var i=0; i<ageLabels.length; i++) {
+      var tr = document.createElement("tr");
+      var label = ageLabels[i];
+      var f = parseInt(latest["f"+label]);
+      var m = parseInt(latest["m"+label]);
+      var tot = f+m;
+      var percentagef = Math.round(f/ftotal*1000)/10;
+      var percentagem = Math.round(m/mtotal*1000)/10;
+      var percentagetot = Math.round(tot/(ftotal+mtotal)*1000)/10;
+      tr.innerHTML = "<th>"+label+"</th><td>"+f+"</td><td>"+percentagef+"%</td><td>"+m+"</td><td>"+percentagem+"%</td><td>"+tot+"</td><td>"+percentagetot+"%</td>";
+      table.appendChild(tr);
+    }
+    var bag = parseInt(latest.totalbag);
+    var all = ftotal+mtotal;
+    var missing = bag-all;
+    var missingPerc = Math.round(missing/bag*1000)/10;
     var tr = document.createElement("tr");
-    var label = ageLabels[i];
-    var f = parseInt(latest["f"+label]);
-    var m = parseInt(latest["m"+label]);
-    var tot = f+m;
-    var percentagef = Math.round(f/ftotal*1000)/10;
-    var percentagem = Math.round(m/mtotal*1000)/10;
-    var percentagetot = Math.round(tot/(ftotal+mtotal)*1000)/10;
-    tr.innerHTML = "<th>"+label+"</th><td>"+f+"</td><td>"+percentagef+"%</td><td>"+m+"</td><td>"+percentagem+"%</td><td>"+tot+"</td><td>"+percentagetot+"%</td>";
+    var percentagef = Math.round(ftotal/all*1000)/10;
+    var percentagem = Math.round(mtotal/all*1000)/10;
+    tr.innerHTML = "<th>TOTAL</th><td>"+ftotal+"</td><td>"+percentagef+"%</td><td>"+mtotal+"</td><td>"+percentagem+"%</td><td>"+all+"</td><td></td>";
     table.appendChild(tr);
-  }
-  var bag = parseInt(latest.totalbag);
-  var all = ftotal+mtotal;
-  var missing = bag-all;
-  var missingPerc = Math.round(missing/bag*1000)/10;
-  var tr = document.createElement("tr");
-  var percentagef = Math.round(ftotal/all*1000)/10;
-  var percentagem = Math.round(mtotal/all*1000)/10;
-  tr.innerHTML = "<th>TOTAL</th><td>"+ftotal+"</td><td>"+percentagef+"%</td><td>"+mtotal+"</td><td>"+percentagem+"%</td><td>"+all+"</td><td></td>";
-  table.appendChild(tr);
-  tr = document.createElement("tr");
-  tr.innerHTML = "<th colspan=3>Ohne Altersangabe</th><td></td><td></td><td>"+missing+"</td><td>"+missingPerc+"%</td>";
-  table.appendChild(tr);
-  tr = document.createElement("tr");
-  tr.innerHTML = "<th colspan=3>Zahl aller Meldungen</th><td></td><td></td><td>"+bag+"</td><td></td>";
-  table.appendChild(tr);
-  div.appendChild(table);
-  loadDeaths();
-  });
+    tr = document.createElement("tr");
+    tr.innerHTML = "<th colspan=3>Ohne Altersangabe</th><td></td><td></td><td>"+missing+"</td><td>"+missingPerc+"%</td>";
+    table.appendChild(tr);
+    tr = document.createElement("tr");
+    tr.innerHTML = "<th colspan=3>Zahl aller Meldungen</th><td></td><td></td><td>"+bag+"</td><td></td>";
+    table.appendChild(tr);
+    div.appendChild(table);
+    loadDeaths();
+    });
 }
 
 
 function loadDeaths() {
-  d3.csv('data/deaths.csv', function(error, csvdata) {
+  var url = "https://raw.githubusercontent.com/rsalzer/COVID_19_BAG/master/";
+  d3.csv(url+'data/deaths.csv', function(error, csvdata) {
     deaths = csvdata;
     var latestDeaths = deaths[deaths.length-1];
     var latest = detaildata[detaildata.length-1];
@@ -192,7 +197,8 @@ function loadDeaths() {
 }
 
 function loadHospitalised() {
-  d3.csv('data/hospitalised.csv', function(error, csvdata) {
+  var url = "https://raw.githubusercontent.com/rsalzer/COVID_19_BAG/master/";
+  d3.csv(url+'data/hospitalised.csv', function(error, csvdata) {
     hospitalised = csvdata;
     var latestHospitalised = hospitalised[hospitalised.length-1];
     var latest = detaildata[detaildata.length-1];
