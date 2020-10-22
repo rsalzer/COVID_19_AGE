@@ -58,16 +58,35 @@ app.controller('BarCtrl', ['$scope', function ($scope) {
   $scope.incidences = function() { $scope.set = 3; $scope.update(); }
   $scope.hosp = function() { $scope.set = 4; $scope.update(); }
 
+  $scope.duration = 1;
+  $scope.whole = function() { $scope.duration = 1; $scope.update(); }
+  $scope.secondWave = function() { $scope.duration = 2; $scope.update(); }
+  $scope.lastDays = function() { $scope.duration = 3; $scope.update(); }
+
   $scope.update = function() {
     let dataToUse;
     dataToUse = $scope.set==1?detaildata:($scope.set==2?deaths:($scope.set==3?data:hospitalised));
     $scope.series[0] = $scope.set==1?'Fälle':($scope.set==2?'Todesfälle':($scope.set==3?'Inzidenz':'Hospitalisierungen'));
+    let index = dataToUse.length-6;
+    if($scope.duration==2) index = dataToUse.findIndex(d=> d.date == "2020-05-31");
+    let firstData = dataToUse[index];
     let latestData = dataToUse[dataToUse.length-1];
     for(var i=0; i<ageLabels.length; i++) {
       let label = ageLabels[i];
       let f = parseFloat(latestData["f"+label]);
       let m = parseFloat(latestData["m"+label]);
       let tot = f+m;
+
+      if($scope.duration!=1) {
+        let fFirst = parseFloat(firstData["f"+label]);
+        let mFirst = parseFloat(firstData["m"+label]);
+        let totFirst = fFirst+mFirst;
+
+        f = f-fFirst;
+        m = m-mFirst;
+        tot = tot-totFirst;
+      }
+
       $scope.data[0][i] = $scope.sex==3?tot:$scope.sex==2?m:f;
     }
   }

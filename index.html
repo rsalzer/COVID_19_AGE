@@ -90,9 +90,15 @@
             <div class="angulardiv">
               <span class="chartHeading">Dataset:</span>
               <button class="chartButton" ng-click="cases()" ng-class="set==1?'active':''">Fälle</button>
-              <button class="chartButton" ng-click="deaths()" ng-class="set==2?'active':''">Todesfälle</button>
               <button class="chartButton" ng-click="incidences()" ng-class="set==3?'active':''">Inzidenzen</button>
+              <button class="chartButton" ng-click="deaths()" ng-class="set==2?'active':''">Todesfälle</button>
               <button class="chartButton" ng-click="hosp()" ng-class="set==4?'active':''">Hospitalisierungen</button>
+            </div>
+            <div class="angulardiv">
+              <span class="chartHeading">Zeit:</span>
+              <button class="chartButton" ng-click="whole()" ng-class="duration==1?'active':''">Ganze Pandemie</button>
+              <button class="chartButton" ng-click="secondWave()" ng-class="duration==2?'active':''">Ab Juni</button>
+              <button class="chartButton" ng-click="lastDays()" ng-class="duration==3?'active':''">Letzte 6 Tage</button>
             </div>
           </div>
       </article>
