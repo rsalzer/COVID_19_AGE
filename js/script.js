@@ -1,7 +1,7 @@
 var data;
 var detaildata;
 var deaths;
-var hostpitalised;
+var hospitalised;
 
 var ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
 var genderLabels = {
@@ -26,6 +26,56 @@ var ageColours = {
   "80+": 'rgb(183, 191, 130)',
   "missing": 'rgb(100,100,100)'
 };
+
+
+var app = angular.module('age', ['chart.js']);
+
+app.controller('BarCtrl', ['$scope', function ($scope) {
+  $scope.type = "bar";
+  $scope.options = {
+    legend: { display: false },
+    tooltips: {
+        mode: "index",
+        intersect: false
+    }
+  };
+  $scope.labels = ageLabels;
+  $scope.series = ['Fälle'];
+  $scope.data = [
+    [0,0,0,0,0,0,0,0,0]
+  ];
+  $scope.colors = [{
+    backgroundColor: ["#2c6a69", "#369381", "#4cb286", "#68c880", "#86d475", "#a1d76c", "#b3d16d", "#b8c17f", "#b7bf82"]
+  }];
+  $scope.sex = 3;
+  $scope.women = function() { $scope.sex = 1; $scope.update(); }
+  $scope.men = function() { $scope.sex = 2; $scope.update(); }
+  $scope.allSexes = function() { $scope.sex = 3; $scope.update(); }
+
+  $scope.set = 1;
+  $scope.cases = function() { $scope.set = 1; $scope.update(); }
+  $scope.deaths = function() { $scope.set = 2; $scope.update(); }
+  $scope.incidences = function() { $scope.set = 3; $scope.update(); }
+  $scope.hosp = function() { $scope.set = 4; $scope.update(); }
+
+  $scope.update = function() {
+    let dataToUse;
+    dataToUse = $scope.set==1?detaildata:($scope.set==2?deaths:($scope.set==3?data:hospitalised));
+    $scope.series[0] = $scope.set==1?'Fälle':($scope.set==2?'Todesfälle':($scope.set==3?'Inzidenz':'Hospitalisierungen'));
+    let latestData = dataToUse[dataToUse.length-1];
+    for(var i=0; i<ageLabels.length; i++) {
+      let label = ageLabels[i];
+      let f = parseFloat(latestData["f"+label]);
+      let m = parseFloat(latestData["m"+label]);
+      let tot = f+m;
+      $scope.data[0][i] = $scope.sex==3?tot:$scope.sex==2?m:f;
+    }
+  }
+
+
+}]);
+
+
 
 Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 
@@ -62,6 +112,10 @@ function downloadAgesDetails() {
   var url = "https://raw.githubusercontent.com/rsalzer/COVID_19_BAG/master/";
   d3.csv(url+'data/allagesdetails.csv', function(error, csvdata) {
     detaildata = csvdata;
+    var angularDiv = document.getElementById("interactive");
+    var scope = angular.element(angularDiv).scope()
+    scope.update();
+    scope.$apply();
     var latest = detaildata[detaildata.length-1];
     var keys = Object.keys(latest);
     var latestArray = keys.map(function(key){

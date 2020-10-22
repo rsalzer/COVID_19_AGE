@@ -14,6 +14,9 @@
     <link rel="localization" hreflang="en" href="lang/en.json" type="application/vnd.oftn.l10n+json"/>
     <script src="js/d3.v3.js"></script>
     <script src="js/Chart.bundle.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-chart.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -46,7 +49,7 @@
         ga('send', 'pageview');
     </script>
   </head>
-  <body onload="loaded()">
+  <body onload="loaded()" ng-app="age">
     <a name="top"></a>
     <nav id="page-nav">
   		<ul>
@@ -75,6 +78,24 @@
 			<header>
 				<h2>Übersicht</h2>
 			</header>
+      <article id="interactive" ng-controller="BarCtrl" style="margin-bottom: 4em;">
+          <canvas id="angularcanvas" class="chart chart-base" chart-type="type" chart-data="data" chart-colors="colors" chart-labels="labels" chart-series="series" chart-options="options"></canvas>
+          <div id="controls">
+            <div class="angulardiv">
+              <span class="chartHeading">Geschlecht:</span>
+              <button class="chartButton" ng-click="women()" ng-class="sex==1?'active':''">Frauen</button>
+              <button class="chartButton" ng-click="men()" ng-class="sex==2?'active':''">Männer</button>
+              <button class="chartButton" ng-click="allSexes()" ng-class="sex==3?'active':''">Alle</button>
+            </div>
+            <div class="angulardiv">
+              <span class="chartHeading">Dataset:</span>
+              <button class="chartButton" ng-click="cases()" ng-class="set==1?'active':''">Fälle</button>
+              <button class="chartButton" ng-click="deaths()" ng-class="set==2?'active':''">Todesfälle</button>
+              <button class="chartButton" ng-click="incidences()" ng-class="set==3?'active':''">Inzidenzen</button>
+              <button class="chartButton" ng-click="hosp()" ng-class="set==4?'active':''">Hospitalisierungen</button>
+            </div>
+          </div>
+      </article>
       <article id="latest">
       </article>
       <article id="deaths">

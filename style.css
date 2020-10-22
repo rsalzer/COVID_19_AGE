@@ -285,6 +285,32 @@ canvas {
   width: 100%;
 	min-width: 1800px;
 }
+#angularcanvas {
+  width: 100%;
+  min-width: 0px;
+  max-width: 500px;
+}
+.angulardiv {
+  display: block;
+}
+#controls {
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+}
+.chartButton {
+    font-family: "IBM Plex Sans", sans-serif;
+    margin: 1em 1em 0 0;
+    padding: 0.2em 0;
+	  color: var(--color-main);
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    text-decoration: capitalize;
+    color: var(--color-main);
+}
+
 button {
 	font-family: "IBM Plex Sans", sans-serif;
 }
@@ -351,20 +377,16 @@ button {
 	border-bottom: 2px solid #000;
 	border-color: var(--color-main);
 }
-
-.chartButton {
-    float: right;
-    display: block;
-    margin: 1em 1em 0 0;
-    padding: 0.2em 0;
-	color: var(--color-main);
-    background-color: transparent;
-    border: 0;
-	  border-bottom: 2px solid transparent;
-    cursor: pointer;
-    text-decoration: none;
-    text-decoration: capitalize;
-    color: var(--color-main);
+.chartHeading {
+  font-family: "IBM Plex Sans", sans-serif;
+  float: left;
+  display: block;
+  margin: 1em 1em 0 0;
+  padding: 0.2em 0;
+  color: var(--color-main);
+  background-color: transparent;
+  font-weight: bold;
+  font-size: 11px;
 }
 .chartButton:hover {
 	border-bottom: 2px solid #000;
@@ -377,74 +399,6 @@ button {
     cursor: default;
 	border-bottom: 2px solid #000;
 	border-color: var(--color-main);
-}
-
-/* !flags */
-.flag {
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: left top;
-	padding-left: 1.75em;
-}
-.flag.AG { background-image: url(flags/ag.png); }
-.flag.AI { background-image: url(flags/ai.png); }
-.flag.AR { background-image: url(flags/ar.png); }
-.flag.BE { background-image: url(flags/be.png); }
-.flag.BL { background-image: url(flags/bl.png); }
-.flag.BS { background-image: url(flags/bs.png); }
-.flag.CH { background-image: url(flags/ch.png); }
-.flag.FL { background-image: url(flags/fl.png); }
-.flag.FR { background-image: url(flags/fr.png); }
-.flag.GE { background-image: url(flags/ge.png); }
-.flag.GL { background-image: url(flags/gl.png); }
-.flag.GR { background-image: url(flags/gr.png); }
-.flag.JU { background-image: url(flags/ju.png); }
-.flag.LI { background-image: url(flags/li.png); }
-.flag.LU { background-image: url(flags/lu.png); }
-.flag.NE { background-image: url(flags/ne.png); }
-.flag.NW { background-image: url(flags/nw.png); }
-.flag.OW { background-image: url(flags/ow.png); }
-.flag.SG { background-image: url(flags/sg.png); }
-.flag.SH { background-image: url(flags/sh.png); }
-.flag.SO { background-image: url(flags/so.png); }
-.flag.SZ { background-image: url(flags/sz.png); }
-.flag.TG { background-image: url(flags/tg.png); }
-.flag.TI { background-image: url(flags/ti.png); }
-.flag.UR { background-image: url(flags/ur.png); }
-.flag.VD { background-image: url(flags/vd.png); }
-.flag.VS { background-image: url(flags/vs.png); }
-.flag.ZG { background-image: url(flags/zg.png); }
-.flag.ZH { background-image: url(flags/zh.png); }
-@media (prefers-color-scheme: dark) {
-	.flag.AG { background-image: url(flags/ag-dark.png); }
-	.flag.AI { background-image: url(flags/ai-dark.png); }
-	.flag.AR { background-image: url(flags/ar-dark.png); }
-	.flag.BE { background-image: url(flags/be-dark.png); }
-	.flag.BL { background-image: url(flags/bl-dark.png); }
-	.flag.BS { background-image: url(flags/bs-dark.png); }
-	.flag.CH { background-image: url(flags/ch-dark.png); }
-	.flag.FL { background-image: url(flags/fl-dark.png); }
-	.flag.FR { background-image: url(flags/fr-dark.png); }
-	.flag.GE { background-image: url(flags/ge-dark.png); }
-	.flag.GL { background-image: url(flags/gl-dark.png); }
-	.flag.GR { background-image: url(flags/gr-dark.png); }
-	.flag.JU { background-image: url(flags/ju-dark.png); }
-	.flag.LI { background-image: url(flags/li-dark.png); }
-	.flag.LU { background-image: url(flags/lu-dark.png); }
-	.flag.NE { background-image: url(flags/ne-dark.png); }
-	.flag.NW { background-image: url(flags/nw-dark.png); }
-	.flag.OW { background-image: url(flags/ow-dark.png); }
-	.flag.SG { background-image: url(flags/sg-dark.png); }
-	.flag.SH { background-image: url(flags/sh-dark.png); }
-	.flag.SO { background-image: url(flags/so-dark.png); }
-	.flag.SZ { background-image: url(flags/sz-dark.png); }
-	.flag.TG { background-image: url(flags/tg-dark.png); }
-	.flag.TI { background-image: url(flags/ti-dark.png); }
-	.flag.UR { background-image: url(flags/ur-dark.png); }
-	.flag.VD { background-image: url(flags/vd-dark.png); }
-	.flag.VS { background-image: url(flags/vs-dark.png); }
-	.flag.ZG { background-image: url(flags/zg-dark.png); }
-	.flag.ZH { background-image: url(flags/zh-dark.png); }
 }
 
 /* !page-footer */

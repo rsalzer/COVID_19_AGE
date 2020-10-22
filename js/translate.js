@@ -46,7 +46,7 @@ function walk(node, func) {
 var _ = function (string) {
   var trans = string.toLocaleString();
   if(trans==string) {
-    console.log(string+" not translated");
+    //console.log(string+" not translated");
   }
   return string.toLocaleString();
 };
