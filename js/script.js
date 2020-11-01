@@ -27,6 +27,21 @@ var ageColours = {
   "missing": 'rgb(100,100,100)'
 };
 
+function getDataLabels() {
+  return {
+      color: inDarkMode() ? '#ccc' : 'black',
+      font: {
+        weight: 'bold',
+      },
+      align: 'end',
+      anchor: 'end',
+      formatter: function(value, context) {
+        var sum = context.dataset.data.reduce( (acc, val) => acc+val, 0);
+        var percentage = Math.round(value / sum * 1000) / 10;
+        return percentage+"%";
+      }
+  };
+}
 
 var app = angular.module('age', ['chart.js']);
 
@@ -35,8 +50,15 @@ app.controller('BarCtrl', ['$scope', function ($scope) {
   $scope.options = {
     legend: { display: false },
     tooltips: {
-        mode: "index",
         intersect: false
+    },
+    title: {
+        display: true,
+        text: "Altersverteilung",
+        padding: 15
+    },
+    plugins: {
+      datalabels: getDataLabels()
     }
   };
   $scope.labels = ageLabels;
@@ -61,7 +83,8 @@ app.controller('BarCtrl', ['$scope', function ($scope) {
   $scope.duration = 1;
   $scope.whole = function() { $scope.duration = 1; $scope.update(); }
   $scope.secondWave = function() { $scope.duration = 2; $scope.update(); }
-  $scope.lastDays = function() { $scope.duration = 3; $scope.update(); }
+  $scope.last7Days = function() { $scope.duration = 3; $scope.update(); }
+  $scope.last14Days = function() { $scope.duration = 4; $scope.update(); }
 
   $scope.update = function() {
     let dataToUse;
@@ -69,17 +92,18 @@ app.controller('BarCtrl', ['$scope', function ($scope) {
     $scope.series[0] = $scope.set==1?'Fälle':($scope.set==2?'Todesfälle':($scope.set==3?'Inzidenz':'Hospitalisierungen'));
     let index = dataToUse.length-6;
     if($scope.duration==2) index = dataToUse.findIndex(d=> d.date == "2020-05-31");
+    else if($scope.duration==4) index = dataToUse.length-11;
     let firstData = dataToUse[index];
     let latestData = dataToUse[dataToUse.length-1];
     for(var i=0; i<ageLabels.length; i++) {
       let label = ageLabels[i];
-      let f = parseFloat(latestData["f"+label]);
-      let m = parseFloat(latestData["m"+label]);
+      let f = Math.round(parseFloat(latestData["f"+label]));
+      let m = Math.round(parseFloat(latestData["m"+label]));
       let tot = f+m;
 
       if($scope.duration!=1) {
-        let fFirst = parseFloat(firstData["f"+label]);
-        let mFirst = parseFloat(firstData["m"+label]);
+        let fFirst = Math.round(parseFloat(firstData["f"+label]));
+        let mFirst = Math.round(parseFloat(firstData["m"+label]));
         let totFirst = fFirst+mFirst;
 
         f = f-fFirst;
@@ -89,6 +113,12 @@ app.controller('BarCtrl', ['$scope', function ($scope) {
 
       $scope.data[0][i] = $scope.sex==3?tot:$scope.sex==2?m:f;
     }
+    if($scope.set==3) $scope.options.plugins.datalabels = false;
+    else $scope.options.plugins.datalabels = getDataLabels();
+
+    var dataset = $scope.set==1?"Fälle":$scope.set==2?"Todesfälle":$scope.set==3?"Inzidenzen":"Hospitalisierungen";
+    var time = $scope.duration==1?"Ganze Pandemie":$scope.duration==2?"Ab Juni":$scope.duration==3?"Letzte 7 Tage":"Letzte 14 Tage";
+    $scope.options.title.text = "Altersverteilung "+dataset+" "+time;
   }
 
 
@@ -570,7 +600,7 @@ function chartAgesBothSexes(age) {
       }]
   },
   plugins: {
-    labels: false
+    datalabels: false
   }
     },
     data: {

@@ -14,6 +14,7 @@
     <link rel="localization" hreflang="en" href="lang/en.json" type="application/vnd.oftn.l10n+json"/>
     <script src="js/d3.v3.js"></script>
     <script src="js/Chart.bundle.min.js"></script>
+    <script src="js/chartjs-plugin-datalabels.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-chart.min.js"></script>
 
@@ -98,7 +99,8 @@
               <span class="chartHeading">Zeit:</span>
               <button class="chartButton" ng-click="whole()" ng-class="duration==1?'active':''">Ganze Pandemie</button>
               <button class="chartButton" ng-click="secondWave()" ng-class="duration==2?'active':''">Ab Juni</button>
-              <button class="chartButton" ng-click="lastDays()" ng-class="duration==3?'active':''">Letzte 7 Tage</button>
+              <button class="chartButton" ng-click="last14Days()" ng-class="duration==4?'active':''">Letzte 14 Tage</button>
+              <button class="chartButton" ng-click="last7Days()" ng-class="duration==3?'active':''">Letzte 7 Tage</button>
             </div>
           </div>
       </article>
