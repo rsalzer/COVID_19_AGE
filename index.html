@@ -50,17 +50,15 @@
         ga('send', 'pageview');
     </script>
   </head>
-  <body onload="loaded()" ng-app="age">
+  <body ng-app="age">
     <a name="top"></a>
-    <nav id="page-nav">
-  		<ul>
-        <li><a title="Zürich" href="https://rsalzer.github.io/COVID_19_KT_ZH">Zürich</a></li>
-  			<li><a title="Schweiz" href="https://rsalzer.github.io/COVID_19_CH">Schweiz</a></li>
-  			<!-- li><a title="Detailliertere Visualisierung für den Kanton Zürich" href="https://rsalzer.github.io/COVID_19_KT_ZH/">Zürich</a></li -->
-  			<li class="here"><a href="#">Nach Alter</a></li>
-        <li><a title="Spitalbettenauslastung" href="https://rsalzer.github.io/COVID_19_BAG">Spitalauslastung / R</a></li>
-  		</ul>
-	  </nav>
+    <nav id="page-nav" url="https://rsalzer.github.io/COVID_19_BAG/header.html">
+      <div class="dropdown">
+        <button class="dropbtn" id="mainlanguage"></button>
+        <div class="dropdown-content" id="languages">
+        </div>
+      </div>
+    </nav>
     <main>
 		<header id="page-header">
 			<h1>Corona-Fälle in der Schweiz nach Alter</h1>

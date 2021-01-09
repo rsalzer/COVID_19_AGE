@@ -132,6 +132,7 @@ Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 //   var lastUpdateDiv = document.getElementById('latestUpdate');
 //   lastUpdateDiv.innerHTML = "<i>Letztes Update der Daten: "+data[0].commit.committer.date.substring(0,10)+" ("+data[0].commit.message+")</i>";
 // });
+includeHTML();
 setLanguageNav();
 
 function processData() {
@@ -756,55 +757,29 @@ function setLanguageNav() {
   lang = lang.split("-")[0]; //not interested in de-CH de-DE etc.
   switch(lang) {
     case 'de':
+    case 'fr':
+    case 'it':
       break;
     default:
       lang = 'en';
   }
   language = lang;
-  var href;
-  var ul = document.getElementsByTagName("ul")[0];
-  var li = document.createElement("li");
-  if(lang=="de") {
-    li.className = "here";
-    href = "#"
+  var mainlanguageButton = document.getElementById("mainlanguage");
+  mainlanguageButton.innerHTML = lang.toUpperCase();
+  var languagesDiv = document.getElementById("languages");
+  var a;
+  if(lang!="de") {
+    a = document.createElement("a");
+    a.href = "index.html?lang=de";
+    languagesDiv.appendChild(a);
+    a.innerHTML = "DE"
   }
-  else {
-    href = "index.html?lang=de";
+  if(lang!="en") {
+    a = document.createElement("a");
+    a.href = "index.html?lang=en";
+    languagesDiv.appendChild(a);
+    a.innerHTML = "EN"
   }
-  li.innerHTML = '<a href="'+href+'">DE</a>';
-  ul.appendChild(li);
-  /*
-  li = document.createElement("li");
-  if(lang=="fr") {
-    li.className = "here";
-    href = "#"
-  }
-  else {
-    href = "index.html?lang=fr";
-  }
-  li.innerHTML = '<a href="'+href+'">FR</a>';
-  ul.appendChild(li);
-  li = document.createElement("li");
-  if(lang=="it") {
-    li.className = "here";
-    href = "#"
-  }
-  else {
-    href = "index.html?lang=it";
-  }
-  li.innerHTML = '<a href="'+href+'">IT</a>';
-  ul.appendChild(li);
-  */
-  li = document.createElement("li");
-  if(lang=="en") {
-    li.className = "here";
-    href = "#"
-  }
-  else {
-    href = "index.html?lang=en";
-  }
-  li.innerHTML = '<a href="'+href+'">EN</a>';
-  ul.appendChild(li);
 }
 
 function inDarkMode() {
@@ -812,4 +787,33 @@ function inDarkMode() {
     return true;
   }
   return false;
+}
+
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("nav");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("url");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.insertAdjacentHTML("afterbegin", this.responseText);}
+          if (this.status == 404) {elmnt.insertAdjacentHTML("afterbegin", "Page not found.");}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("url");
+          document.getElementById("pagenav_age").className = "here";
+          loaded();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
+    }
+  }
 }
