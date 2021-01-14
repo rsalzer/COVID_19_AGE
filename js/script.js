@@ -292,7 +292,7 @@ function loadDeaths() {
     div.appendChild(table);
     div = document.getElementById("mortality");
     h3 = document.createElement("h3");
-    h3.innerHTML = "<span>Mortalität bis zum </span>"+dateString+"</h3>";
+    h3.innerHTML = "<span>Case Fatality Rate bis zum </span>"+dateString+"</h3>";
     div.prepend(h3);
     div.appendChild(mortalitytable);
 
