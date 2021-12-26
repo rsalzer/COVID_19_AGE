@@ -122,11 +122,73 @@
     </section>
     <section id="detail">
       <header>
-  			<h2>Details</h2>
+  			<h2>Verlauf</h2>
 	    </header>
-      <article id="incidences">
-        <h3>Verlauf der Fälle pro 100'000 Bewohner</h3>
-        <div class="canvas-dummy" id="incidencescanvasdiv">
+      <div class="notes">
+        Die Altersdaten werden wöchentlich veröffentlicht. Die einzelnen Einträge beziehen sich jeweils auf die Woche ab dem angegebenen Datum.<br/>
+        Sie können die Charts individuell konfigurieren (Datensatz, Kanton, Altersklasse, Farbe) und über den "Hinzufügen"-Button anzeigen lassen.<br/>
+        "Alle hinzufügen" fügt jeweils alle Kantone für die ausgewählte Altersklasse oder alle Altersklassen für den ausgewählten Kanton hinzu.
+      </div>
+      <article ng-controller="AgeCtrl" id="interactive2">
+        <!-- <h3><span class="flag {{selectedCanton}}">&nbsp;</span>{{showR?'Reproduktionszahl':(showICU?'Intensivstationen:':'Total:')}} {{!showR?strings[selectedDataset]:''}}</h3> -->
+        <div class="canvascontainer2">
+          <canvas id="angularcanvas2" class="chart chart-line angularchart" chart-colors="colors" chart-data="data" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride"></canvas>
+          <!-- chart-labels="labels" -->
+        </div>
+        <div id="controls2">
+          <div class="angulardiv">
+            <span class="chartHeading">Charts:</span>
+              <span ng-repeat="chart in charts">
+                <button class="internationalButton rightButton" ng-click="deleteChart($index)" ng-class="index==$index?'active':''" ng-style="{'border-color': chart.color}">{{strings[chart.selectedDataset]}}-{{chart.geoUnit.replace("CH_","")}}-{{chart.age}}<span style="color: #FF0000"> X</span></button>
+              </span>
+                <button class="internationalButton rightButton" ng-click="deleteAllCharts()">Alle löschen</button>
+              <!-- ng-style="{'background-color':chart.color}" -->
+          </div>
+          <div class="angulardiv">
+            <span class="chartHeading">Ausschnitt:</span>
+            <button class="internationalButton rightButton" ng-click="duration=0;update()" ng-class="duration==0?'active':''">Gesamt</button>
+            <button class="internationalButton rightButton" ng-click="duration=93;update()" ng-class="duration==93?'active':''">Letzte 3 Monate</button>
+            <button class="internationalButton rightButton" ng-click="duration=31;update()" ng-class="duration==31?'active':''">Letzter Monat</button>
+          </div>
+          <div class="angulardiv">
+            <span class="chartHeading">Absolut/Relativ:</span>
+            <button class="internationalButton rightButton" ng-click="showAbsolute=true;update()" ng-class="showAbsolute?'active':''">Absolut</button>
+            <button class="internationalButton rightButton" ng-click="showAbsolute=false;update()" ng-class="!showAbsolute?'active':''">Pro 100'000 Einwohner</button>
+          </div>
+          <div class="angulardiv">
+            <span class="chartHeading">ySkala:</span>
+            <button class="internationalButton rightButton" ng-click="singleScale=false;update()" ng-class="!singleScale?'active':''">Mehrere Skalas</button>
+            <button class="internationalButton rightButton" ng-click="singleScale=true;update()" ng-class="singleScale?'active':''">Eine Skala</button>
+          </div>
+          <div class="singlecanton">
+            <h4>Chart hinzufügen:</h4>
+            <div class="angulardiv">
+              <div class="angulardiv">
+                <span class="chartHeading">Datensatz:</span>
+                  <button class="internationalButton rightButton" ng-repeat="set in datasets" ng-click="selectDataset(set)" ng-class="selectedDataset==set?'active':''">{{strings[set]}}</button>
+              </div>
+              <span class="chartHeading">Kanton:</span>
+                <button class="internationalButton rightButton" ng-repeat="canton in cantons" ng-click="selectCanton(canton)" ng-class="selectedGeoUnit=='CH_'+canton?'active':''">{{canton}}</button>
+                <button class="internationalButton rightButton" ng-click="addAllCantons()">Alle hinzufügen</button>
+              <!-- <button class="controlButton" ng-click="showAllCantons()">Alle</button>
+              <button class="controlButton" ng-click="showNoCanton()">Keiner</button> -->
+            </div>
+            <span class="chartHeading">Altersklasse:</span>
+              <button class="internationalButton rightButton" ng-repeat="age in ages" ng-click="selectAge(age)" ng-class="selectedAge==age?'active':''">{{age}}</button>
+              <button class="internationalButton rightButton" ng-click="addAllAges()">Alle hinzufügen</button>
+            <div class="angulardiv">
+            </div>
+            <div class="angulardiv">
+              <span class="chartHeading">Farbe:</span>
+                <button class="internationalButton rightButton colorButton" ng-style="{'background-color':color}" ng-repeat="color in availableColors" ng-click="selectColor(color)" ng-class="selectedColor==color?'active':''">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                Eigene: <input type="color" id="html5colorpicker" value="#ff0000" ng-model="myColor" ng-change="colorPicked(myColor)" style="width:24px; height: 30px; vertical-align: middle;">
+                <button class="internationalButton rightButton colorButton" ng-click="randomColor()">Zufällige Farbe</button>
+            </div>
+            <div class="angulardiv">
+              <button class="internationalButton rightButton" ng-click="addChart()">Hinzufügen</button>
+              <!-- <button class="internationalButton rightButton" ng-click="deleteChart()">Delete Chart</button> -->
+            </div>
+          </div>
         </div>
       </article>
     </section>

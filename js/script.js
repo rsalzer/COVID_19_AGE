@@ -2,8 +2,25 @@ var data;
 var detaildata;
 var deaths;
 var hospitalised;
+var ageData = {};
+
+Chart.Tooltip.positioners.custombar = function(elements, eventPosition) { //<-- custom is now the new option for the tooltip position
+    /** @type {Chart.Tooltip} */
+    var tooltip = this;
+
+    /* ... */
+
+    var half = eventPosition.x - 100;
+    if(half<100) half += 200;
+    //if(half< 30) half = eventPosition.x + 150;
+    return {
+        x: half,
+        y: 0
+    };
+}
 
 var ageLabels = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
+const cantons = ['AG', 'AI', 'AR', 'BE', 'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU', 'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG', 'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH', 'FL', 'CH', 'CHFL'];
 var genderLabels = {
   "m": "Männer",
   "f": "Frauen",
@@ -41,6 +58,41 @@ function getDataLabels() {
         return percentage+"%";
       }
   };
+}
+
+var ageUrls;
+function getBAGMetaData() {
+  var url = 'https://www.covid19.admin.ch/api/data/context';
+  d3.json(url, function(error, jsondata) {
+    ageUrls = jsondata.sources.individual.csv.weekly.byAge;
+    getBAGAgeData("cases");
+  });
+}
+
+var ageInitialized = false;
+function getBAGAgeData(dataset) {
+  let url = ageUrls[dataset];
+  d3.csv(url, function(error, csvdata) {
+      if(error!=null) {
+        alert("Daten konnten nicht geladen werden");
+      }
+      else {
+        ageData[dataset] = csvdata;
+        if(!ageInitialized) {
+          ageInitialized = true;
+          processAgeData();
+        }
+      }
+  });
+}
+
+function processAgeData() {
+  var angularDiv = document.getElementById("interactive2");
+  var scope = angular.element(angularDiv).scope()
+  scope.addChart();
+  scope.selectedColor = scope.availableColors[3];
+  scope.selectedAge = "80+";
+  scope.$apply();
 }
 
 var app = angular.module('age', ['chart.js']);
@@ -124,6 +176,311 @@ app.controller('BarCtrl', ['$scope', function ($scope) {
 
 }]);
 
+app.controller('AgeCtrl', ['$scope', function ($scope) {
+
+  //Constants:
+  $scope.cantons = cantons;
+  $scope.strings = {
+    'cases': 'Fälle',
+    'hosp': 'Hospitalisationen',
+    'death': 'Todesfälle',
+    'test': 'Tests'
+  };
+  $scope.datasets = ['cases', 'hosp', 'death', 'test'];
+  $scope.ages = ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"];
+  $scope.availableColors = Chart.defaults.global.colors;
+  // $scope.availableColors.push('#CCCC00');
+  // $scope.availableColors.push('#CC0000');
+  $scope.myColor = '#55ff55';
+
+  //Chart-Configs:
+  $scope.duration = 0;
+  $scope.charts = [];
+  $scope.showAbsolute = true;
+  $scope.singleScale = false;
+
+  //Configs of single chart
+  $scope.labels = [];
+  $scope.series = [];
+  $scope.selectedDataset = 'cases';
+  $scope.selectedGeoUnit = 'CH_CH';
+  $scope.selectedAge = "30-39";
+  $scope.selectedColor = $scope.availableColors[2];
+
+  $scope.addChart = function() {
+    let newChart = {
+      geoUnit: $scope.selectedGeoUnit,
+      selectedDataset: $scope.selectedDataset,
+      color: $scope.selectedColor,
+      age: $scope.selectedAge,
+    };
+    $scope.charts.push(newChart);
+    $scope.update();
+  }
+
+  $scope.addAllAges = function() {
+    let colors = ["#2c6a69", "#369381", "#4cb286", "#68c880", "#86d475", "#a1d76c", "#b3d16d", "#b8c17f", "#b7bf82"]
+    $scope.ages.forEach((item, i) => {
+      let newChart = {
+        geoUnit: $scope.selectedGeoUnit,
+        selectedDataset: $scope.selectedDataset,
+        color: colors[i], //getRandomColor(),
+        age: item,
+      };
+      $scope.charts.push(newChart);
+    });
+    $scope.update();
+  }
+
+  $scope.addAllCantons = function() {
+    let onlyCantons = $scope.cantons.slice(0,26);
+    onlyCantons.forEach((item, i) => {
+      let newChart = {
+        geoUnit: item,
+        selectedDataset: $scope.selectedDataset,
+        color: getRandomColor(),
+        age: $scope.selectedAge,
+      };
+      $scope.charts.push(newChart);
+    });
+    $scope.update();
+  }
+
+  $scope.selectChart = function(index) {
+    $scope.index = index;
+  }
+
+  $scope.selectColor = function(color) {
+    $scope.selectedColor = color;
+  }
+
+  $scope.selectDataset = function(dataset) {
+    if(dataset!='cases' && !$scope.selectedGeoUnit.startsWith("CH_")) $scope.selectedGeoUnit = "CH_CH";
+    $scope.selectedDataset = dataset;
+    if(!ageData[dataset]) {
+      getBAGAgeData(dataset);
+    }
+    //console.log($scope.charts);
+  }
+
+  $scope.selectCanton = function(canton) {
+    $scope.selectedGeoUnit = "CH_"+canton;
+    //$scope.charts[$scope.index].canton = canton;
+    //$scope.update();
+  }
+
+  $scope.selectAge = function(age) {
+    $scope.selectedAge = age;
+    //$scope.charts[$scope.index].canton = canton;
+    //$scope.update();
+  }
+
+
+  $scope.colorPicked = function(color) {
+    //alert(color);
+    $scope.availableColors.push(color);
+    $scope.selectedColor = color;
+  }
+
+  $scope.randomColor = function() {
+    let color = getRandomColor();
+    //alert(color);
+    $scope.availableColors.push(color);
+    $scope.selectedColor = color;
+  }
+
+  $scope.deleteChart = function(index) {
+    if($scope.charts.length==0) return;
+    $scope.charts.splice(index,1);
+    $scope.index = 0;
+    $scope.update();
+  }
+
+  $scope.deleteAllCharts = function(index) {
+    if($scope.charts.length==0) return;
+    $scope.charts = [];
+    $scope.index = 0;
+    $scope.update();
+  }
+
+  $scope.options = {
+    animation: false,
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+        padding: {
+            right: 0
+        }
+    },
+    legend: {
+      display: false
+    },
+    title: {
+      display: false
+    },
+    tooltips: {
+      position : 'custombar',
+      mode: 'nearest',
+      axis: "x",
+      intersect: false,
+      caretSize: 0,
+      bodyFontFamily: 'IBM Plex Mono'
+    },
+    elements: {
+      point: { radius: 0 }
+    },
+    hover: {
+      mode: 'nearest',
+      axis: "x",
+      intersect: false,
+    },
+    scales: {
+      xAxes: [{
+          type: 'time',
+          time: {
+            tooltipFormat: 'ddd DD.MM.YYYY',
+            unit: 'month'
+          },
+          ticks: {
+            minRotation: (getDeviceState()==2?90:0),
+            maxRotation: 90,
+            // min: getDateForMode(mode),
+            // max: new Date()
+          },
+          gridLines: {
+              color: inDarkMode() ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+          }
+        }],
+        yAxes: [{
+            id: 'cases',
+            type: 'linear',
+            position: 'left',
+            display: 'auto',
+            ticks: {
+              beginAtZero: true,
+            },
+            gridLines: {
+                color: inDarkMode() ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+            }
+          },
+          {
+            type: 'linear',
+            position: 'right',
+            display: 'auto',
+            id: 'hosp',
+            ticks: {
+              beginAtZero: true
+            }
+          },
+          {
+            type: 'linear',
+            position: 'right',
+            display: 'auto',
+            id: 'death',
+            ticks: {
+              beginAtZero: true
+            }
+          },
+          {
+            type: 'linear',
+            position: 'right',
+            display: 'auto',
+            id: 'test',
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        ]
+      },
+    plugins: {
+      datalabels: {
+        display: false
+      }
+    }
+  };
+  $scope.datasetOverride = [{
+      label: "",
+      fill: false,
+      cubicInterpolationMode: 'monotone',
+      spanGaps: true
+  }];
+
+  $scope.update = function() {
+    $scope.data = [];
+    if($scope.charts.length==0) {
+      $scope.data = [[{x: new Date(), y: 0}]];
+      return;
+    }
+    $scope.datasetOverride = [];
+    $scope.colors = [];
+    for(var i=0; i<$scope.charts.length; i++) {
+      var singleChart = $scope.charts[i];
+      let dataToUse = ageData[singleChart.selectedDataset];
+      let international = false;
+      let filteredData = dataToUse.filter(d => d.geoRegion===singleChart.geoUnit.replace("CH_", "") && d.altersklasse_covid19.replaceAll(" ","")==singleChart.age);
+      if($scope.duration!=0) {
+        filteredData.splice(0, filteredData.length-$scope.duration);
+        $scope.options.scales.xAxes[0].time.unit = 'day';
+      }
+      else $scope.options.scales.xAxes[0].time.unit = 'month';
+      // $scope.labels = filteredData.map(d => {
+      //   var dateSplit = d.date.split("-");
+      //   var day = parseInt(dateSplit[2]);
+      //   var month = parseInt(dateSplit[1])-1;
+      //   var year = parseInt(dateSplit[0]);
+      //   return new Date(year,month,day);
+      // });
+
+      var colorToUse = singleChart.color;
+      $scope.colors.push(colorToUse);
+      $scope.options.scales.yAxes[0].ticks.suggestedMax = 0;
+      $scope.datasetOverride.push({
+          label: $scope.strings[singleChart.selectedDataset]+" "+singleChart.geoUnit.replace("CH_", "")+" "+singleChart.age,
+          fill: false,
+          cubicInterpolationMode: 'monotone',
+          spanGaps: true,
+          yAxisID: $scope.singleScale?'cases':singleChart.selectedDataset
+        });
+
+        $scope.data.push(filteredData.map((d,index,array) => {
+          // let sum7d = $scope.showAbsolute?d.sum7d:d.inzsum7d;
+          // let yPoint = null;
+          // if(sum7d) {
+          //     yPoint = Math.round(sum7d/7*100)/100;
+          // }
+          let yPoint = $scope.showAbsolute?d.entries:d.inz_entries;
+          let dateSplit;
+          if(d.datum) dateSplit = d.datum_dboardformated.split("-");
+          else dateSplit = d.date.split("-");
+          let week = parseInt(dateSplit[1]);
+          let year = parseInt(dateSplit[0]);
+          let xPoint = getDateOfISOWeek(week, year);
+          return {
+            t: xPoint,
+            y: yPoint
+          };
+        }));
+        //console.log($scope.data);
+    }
+  }
+
+}]);
+
+function getRandomColor() {
+  return "#"+Math.floor(Math.random()*16777215).toString(16);
+}
+
+function getDateOfISOWeek(w, y) {
+    var simple = new Date(y, 0, 1 + (w - 1) * 7);
+    var dow = simple.getDay();
+    var ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+    return ISOweekStart;
+}
+
 
 
 Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
@@ -135,18 +492,19 @@ Chart.defaults.global.defaultFontFamily = "IBM Plex Sans";
 includeHTML();
 setLanguageNav();
 
-function processData() {
-  var div = document.getElementById("maindiv");
-  chartSingleAgeSex('f');
-  chartSingleAgeSex('m');
-  for(var i=0; i<ageLabels.length; i++) {
-    chartAgesBothSexes(ageLabels[i]);
-    barChartDetails(ageLabels[i],'f');
-    barChartDetails(ageLabels[i],'m');
-  }
-}
+// function processData() {
+//   var div = document.getElementById("maindiv");
+//   chartSingleAgeSex('f');
+//   chartSingleAgeSex('m');
+//   for(var i=0; i<ageLabels.length; i++) {
+//     chartAgesBothSexes(ageLabels[i]);
+//     barChartDetails(ageLabels[i],'f');
+//     barChartDetails(ageLabels[i],'m');
+//   }
+// }
 
 downloadAllAges();
+getBAGMetaData();
 
 
 
@@ -378,8 +736,6 @@ function loadHospitalised() {
     h3.innerHTML = "<span>Hospitalisationsrate bis zum </span>"+dateString+"</h3>";
     div.prepend(h3);
     div.appendChild(hospratetable);
-
-    setTimeout(function(){ processData(); }, 200);
   });
 }
 
@@ -816,4 +1172,14 @@ function includeHTML() {
       return;
     }
   }
+}
+
+// Create the state-indicator element
+var indicator = document.createElement('div');
+indicator.className = 'state-indicator';
+document.body.appendChild(indicator);
+
+// Create a method which returns device state
+function getDeviceState() {
+    return parseInt(window.getComputedStyle(indicator).getPropertyValue('z-index'), 10);
 }

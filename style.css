@@ -425,10 +425,7 @@ h3 {
 		border-color: #333;
 	}
 }
-canvas {
-  width: 100%;
-	min-width: 1800px;
-}
+
 #angularcanvas {
   width: 100%;
   min-width: 0px;
@@ -442,6 +439,11 @@ canvas {
   height: 100%;
   max-width: 500px;
 }
+.singlecanton {
+  border-top: 1px solid #000;
+  border-color: var(--color-main);
+}
+
 .chartButton {
     font-family: "IBM Plex Sans", sans-serif;
     margin: 1em 1em 0 0;
@@ -476,12 +478,48 @@ button {
 	    clear: both;
 	}
 }
+
+.rightButtonDiv {
+   max-width: var(--maxwidth);
+   text-align: right;
+}
+.internationalButton {
+    clear: both;
+}
+.internationalButton {
+    margin: 1em 1em 1em 0;
+    padding: 0.2em 0;
+	  color: var(--color-main);
+    background-color: transparent;
+    border: 0;
+	  border-bottom: 2px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    text-decoration: capitalize;
+    color: var(--color-main);
+}
+.rightButtonDiv button:last-child {
+  margin: 1em 0em 1em 0;
+}
+.internationalButton.active {
+	border-bottom: 2px solid #000;
+	border-color: var(--color-main);
+}
+
+
 .notes {
 	font-size: 0.8em;
 	margin-bottom: 1em;
 }
 .notes > :last-child {
 	margin-bottom: 0;
+}
+
+.canvascontainer2 {
+  position: relative;
+  /* background-color: red; */
+  height: 400px;
+  width: 100%;
 }
 
 .toplink {
@@ -512,6 +550,11 @@ button {
 .internationalButton:hover {
 	border-bottom: 2px solid #000;
 	border-color: var(--color-main);
+}
+.colorButton.active,
+.colorButton:hover {
+  border: 2px solid #000;
+  border-color: var(--color-main);
 }
 .internationalButton:focus {
     outline: none;
