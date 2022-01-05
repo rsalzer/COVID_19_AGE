@@ -324,7 +324,8 @@ app.controller('AgeCtrl', ['$scope', function ($scope) {
       axis: "x",
       intersect: false,
       caretSize: 0,
-      bodyFontFamily: 'IBM Plex Mono'
+      bodyFontFamily: 'IBM Plex Mono',
+      itemSort: (a, b, data) => b.yLabel - a.yLabel
     },
     elements: {
       point: { radius: 0 }
@@ -434,8 +435,10 @@ app.controller('AgeCtrl', ['$scope', function ($scope) {
       var colorToUse = singleChart.color;
       $scope.colors.push(colorToUse);
       $scope.options.scales.yAxes[0].ticks.suggestedMax = 0;
+      var ageString = singleChart.age;
+      if(ageString.length==3) ageString = "  "+ageString;
       $scope.datasetOverride.push({
-          label: $scope.strings[singleChart.selectedDataset]+" "+singleChart.geoUnit.replace("CH_", "")+" "+singleChart.age,
+          label: $scope.strings[singleChart.selectedDataset]+" "+singleChart.geoUnit.replace("CH_", "")+" "+ageString,
           fill: false,
           cubicInterpolationMode: 'monotone',
           spanGaps: true,
